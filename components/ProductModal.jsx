@@ -113,7 +113,7 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                     cursor: 'pointer',
                     zIndex: 1001
                 }}
-                aria-label="Close"
+                aria-label="Clodb e"
             >
                 <AiOutlineClose />
             </button>
