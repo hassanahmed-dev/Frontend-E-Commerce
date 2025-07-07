@@ -10,7 +10,7 @@ import Product from "../../components/Product";
 import Navbar from "../../components/Navbar";
 import FooterContact from "../../components/FooterContact";
 import Footer from "../../components/Footer";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { fetchProductById } from "../../store/slices/productSlice";
 import { fetchReviewsByProduct, addReview } from "../../store/slices/reviewSlice";
 import axios from "axios";
@@ -20,8 +20,7 @@ import { fetchWishlist, addToWishlist, removeFromWishlist } from '../../store/sl
 
 export default function ProductDetail() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+const { id } = useParams();
   const dispatch = useDispatch();
   console.log("Product ID from URL:", id);
   const [product, setProduct] = useState(null);

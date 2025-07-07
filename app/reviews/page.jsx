@@ -67,7 +67,7 @@ export default function ReviewsPage() {
                                             <AiOutlineDelete />
                                         </span>
                         </div>
-                                    <Link href={`/productdetail?id=${review.productId}`} className="product-name-link">
+                                    <Link href={`/productdetail/${review.productId}`} className="product-name-link">
                                         <h4>{review.productName}</h4>
                                     </Link>
                         <h3>{review.userName}</h3>

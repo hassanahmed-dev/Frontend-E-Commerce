@@ -150,7 +150,7 @@ const Product = ({ sectionLabel = "Trending", sectionTitle = "Trending Products"
                     />
                   </div>
                   <div className="add-to-cart-container">
-                    <Link href={`/productdetail?id=${product.id || product._id}`}>
+                    <Link href={`/productdetail/${product._id}`}>
                       <button className="add-to-cart-button">View Details</button>
                     </Link>
                   </div>
