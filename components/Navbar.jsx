@@ -49,7 +49,7 @@ export default function Navbar() {
             <Link href="/products" className="menu-item">
               Shop ALL
             </Link>
-            <Link href="/categories" className="menu-item">
+            <Link href="/products" className="menu-item">
               Categories
             </Link>
             <Link href="/products" className="menu-item">
