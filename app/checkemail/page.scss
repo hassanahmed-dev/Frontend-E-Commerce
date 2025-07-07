@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.check-email-container, .check-email-container * {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom CSS for Check Email page */
+.check-email-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: "Poppins"
+  }
+  
+  .image-section {
+    flex: 1;
+    position: relative;
+    display: none;
+  }
+  
+  .content-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: white;
+  }
+  
+  .content-wrapper {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  h1 {
+    font-family: "Poppins";
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #333;
+  }
+  
+  .instruction {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    font-family: "Poppins";
+    font-size: 14px;
+  }
+  
+  .resend-link {
+    color: #e63b19;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+  .resend-link:hover {
+    text-decoration: underline;
+    background-color: #d63515;
+  }
+  
+  .back-link {
+    display: flex;
+    align-items: center;
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 16px;
+  }
+  
+  .back-link span {
+    margin-left: 8px;
+  }
+  
+  .back-link:hover {
+    color: #333;
+  }
+  
+  /* Media query for larger screens */
+  @media (min-width: 768px) {
+    .image-section {
+      display: block;
+    }
+  }
+  

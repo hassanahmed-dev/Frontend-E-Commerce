@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.signup-container-signup, .signin-container-signup * {
+  font-family: 'Poppins', sans-serif;
+}
+
+.signup-container-signup {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative; /* Ensure proper stacking context */
+}
+
+.image-section {
+  flex: 1;
+  position: fixed; /* Fixed position to stay in place on scroll */
+  top: 0;
+  left: 0;
+  width: 50%; /* Match flex: 1 */
+  height: 100vh; /* Reduced height to avoid covering entire content */
+  display: none;
+  object-fit: cover;
+  overflow: hidden; /* Prevent overflow beyond viewport */
+  z-index: 1; /* Keep behind form */
+}
+
+.form-section-signup {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items from top to ensure visibility */
+  padding: 40px 2rem 40px; /* Reduced top padding and added bottom padding */
+  background-color: white;
+  z-index: 2; /* Ensure form is above image */
+  margin-left: 0; /* Default for mobile */
+}
+
+.form-content-signup {
+  width: 100%;
+  max-width: 400px;
+  z-index: 3; /* Ensure form content stays above image */
+}
+
+.signup-container-signup {
+  display: flex;
+  height: 100vh;
+
+  .image-section {
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .form-section-signup {
+    @media (min-width: 768px) {
+      margin-left: 50%; /* Prevent overlap with fixed image */
+      padding: 60px 2rem 60px; /* Adjusted padding for larger screens */
+    }
+
+    .form-content-signup {
+      width: 100%;
+      max-width: 400px;
+
+      h1 {
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+      }
+
+      .subtitle-signup {
+        color: #666;
+        margin-bottom: 2rem;
+      }
+
+      .signup-button-signup {
+        width: 100%;
+        height: 45px;
+        margin-top: 1rem;
+      }
+
+      .error-message-signup {
+        color: #ff4d4f;
+        margin-bottom: 1rem;
+      }
+
+      .login-link-signup {
+        text-align: center;
+        margin-top: 1.5rem;
+      }
+    }
+  }
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: 'Poppins';
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.subtitle-signup {
+  color: #666;
+  margin-bottom: 24px;
+  font-family: 'Poppins';
+}
+
+.error-message-signup {
+  color: #ff4d4f;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-family: 'Poppins';
+}
+
+/* Override Ant Design styles */
+.ant-form-item {
+  margin-bottom: 20px;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+  font-family: 'Poppins';
+}
+
+.ant-input,
+.ant-input-password {
+  height: 42px;
+  border-radius: 4px;
+}
+
+.ant-form-item-extra {
+  font-size: 12px;
+  color: #666;
+  font-family: 'Poppins';
+}
+
+.signup-button-signup {
+  width: 30%;
+  height: 44px;
+  background-color: #e63b19;
+  border-color: #e63b19;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: 'Poppins';
+  margin-top: 8px;
+}
+
+.signup-button-signup:hover {
+  background-color: #d63515;
+  border-color: #d63515;
+}
+
+.login-link-signup {
+  margin-top: 16px;
+  font-family: 'Poppins';
+  margin-bottom: 60px;
+  color: #666;
+}
+
+.login-link-signup a {
+  color: #e63b19;
+  text-decoration: none;
+  font-family: 'Poppins';
+}
+
+.login-link-signup a:hover {
+  text-decoration: underline;
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+  .image-section {
+    display: block;
+  }
+}

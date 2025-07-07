@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.signin-container, .signin-container * {
+  font-family: 'Poppins', sans-serif;
+}
+
+.signin-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Poppins';
+  width: 100%;
+}
+
+.image-section {
+  flex: 1;
+  position: relative;
+  display: none;
+}
+
+.form-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: white;
+}
+
+.form-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #333;
+  font-family: 'Poppins';
+}
+
+/* Override Ant Design styles */
+.ant-form-item {
+  margin-bottom: 20px;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500;
+  font-family: 'Poppins';
+  color: #333;
+}
+
+.ant-input,
+.ant-input-password {
+  height: 42px;
+  border-radius: 4px;
+  font-family: 'Poppins';
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: 4px;
+  font-family: 'Poppins';
+}
+
+.forgot-password a {
+  color: #666;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+  background-color: #d63515;
+}
+
+.signin-button {
+  width: 30%;
+  height: 44px;
+  background-color: #e63b19;
+  border-color: #e63b19;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 16px;
+  margin-top: 8px;
+  font-family: 'Poppins';
+}
+
+.signin-button:hover,
+.signin-button:focus {
+  background-color: #d63515;
+  border-color: #d63515;
+}
+
+.signup-link {
+  margin-top: 16px;
+  font-family: 'Poppins';
+  color: #666;
+}
+
+.signup-link a {
+  color: #e63b19;
+  text-decoration: none;
+  font-family: 'Poppins';
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+  .image-section {
+    display: block;
+  }
+}
+
+

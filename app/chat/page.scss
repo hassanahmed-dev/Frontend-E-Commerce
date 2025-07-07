@@ -1,0 +1,40 @@
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 700px;
+  width: 100%;
+}
+
+.checkout-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.overlay-button {
+  position: absolute;
+  bottom: 30%;
+  left: 68%;
+  transform: translateX(-50%);
+  background-color: #e53935;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.overlay-button:hover {
+  background-color: #c62828;
+}
+ 

@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.product-list, .product-list * {
+  font-family: 'Poppins', sans-serif;
+}
+
+.product-list {
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+  
+  .product-list-main {
+    flex: 1;
+    padding: 20px 20px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dashboard-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .dashboard-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .notif-icon, .profile-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f2f2f2;
+    font-size: 22px;
+    transition: box-shadow 0.2s;
+  }
+  .profile-icon {
+    background: #e0e7ff;
+  }
+
+  .span-heading{
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+.product-list-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+}
+
+.filter-and-search-add {
+    display: flex;
+    /* align-items: center; */
+    gap: 20px;
+}
+
+.filter-buttons {
+  display: flex;
+  border: 1px solid #ff0000; /* Overall red border */
+  border-radius: 2px; /* Outer rounded corners for the entire group */
+  overflow: hidden; 
+  margin-left: 340px;
+}
+
+.filter-buttons button {
+    background: #fff;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 400;
+    border: none; /* No individual button borders */
+    border-radius: 0; /* Ensures no individual button rounding */
+}
+
+.filter-buttons button.active {
+    background:#fff;
+    color:  #ff0000;
+}
+
+.filter-buttons button:not(.active) {
+  color: #6c757d;
+}
+
+/* Apply the red vertical separator to all buttons except the last one */
+.filter-buttons button:not(:last-child) {
+  border-right: 1px solid #ff0000; /* Red separator line */
+}
+
+.search-add {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between search bar and add product button */
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 1px solid #E4E4E4;
+  border-radius: 2px;
+  width: 220px;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.search-bar input {
+  padding: 4px 14px;
+  border: none;
+  outline: none;
+  padding: 4px 14px;
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  font-weight: 400;
+}
+.search-bar input:focus {
+  outline: none;
+  border-color: #ff0000;
+}
+
+.search-bar svg {
+  color: #888;
+  border-left: 1px solid rgba(217, 217, 217, 1);
+  width: 32;
+  height: 31.9990291595459;
+  gap: 8px;
+  border-width: 1px;
+  padding: 9px;
+}
+
+.add-product-btn {
+    background: rgba(229, 46, 6, 1);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-table-container {
+    background: #fff;
+    border-radius: 8px;
+    overflow-x: auto; /* Ensures table is scrollable on smaller screens */
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    text-align: left;
+    padding: 8px 15px;
+}
+
+table th {
+  font-weight: 600;
+  color: #666;
+  font-size: 13px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  border-bottom: 1px solid #ececec;
+  padding: 12px 15px;
+  vertical-align: middle;
+
+}
+
+table td {
+    font-size: 12px;
+    font-weight: 500;
+    color: #212529;
+}
+
+.product-name-cell {
+    display: flex;
+    align-items: center;
+}
+
+.product-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.ratings-reviews {
+    display: flex;
+    align-items: center;
+}
+
+.star-icon {
+    color: #ffc107;
+    margin-right: 5px;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-badge.in-stock {
+    background-color: rgba(40, 167, 69, 0.05);
+    color: #28a745;
+}
+
+.status-badge.out-of-stock {
+    background-color: #ffe6e6;
+    color: #dc3545;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-icon {
+    font-size: 18px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 1);
+    transition: color 0.2s;
+}
+
+.action-icon:hover {
+    color:  #dc3545;
+}
+
+.review-count-underline {
+  text-decoration: underline;
+  color: inherit; /* Keeps the link color same as parent or set a custom color */
+}
+
+/* Optionally, target the <a> tag specifically if needed */
+.ratings-reviews a {
+  color: #000; /* Replace with your desired color, e.g., black, or any hex code like #123456 */
+  text-decoration: underline; /* Ensures underline stays */
+}
+
+/* If you want to handle hover state */
+.ratings-reviews a:hover {
+  color: #555; /* Optional: Change color on hover */
+}
+

@@ -1,0 +1,147 @@
+.aepl-footer {
+  max-width: 1100px;
+    margin: 0 auto;
+    padding: 10px 40px;
+}
+
+.aepl-footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.aepl-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+.aepl-footer-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.aepl-footer-description {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  max-width: 260px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.aepl-footer-social-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.aepl-footer-social-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  background: #f2f2f2;
+  border-radius: 50%;
+  border: 0.5px solid black;
+}
+
+.aepl-footer-icon {
+  font-size: 20px;
+}
+
+.aepl-footer-subtitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.aepl-footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  list-style: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+.aepl-footer-link {
+  color: #333;
+  text-decoration: none;
+}
+
+.aepl-footer-link:hover {
+  text-decoration: underline;
+}
+
+.aepl-footer-bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.aepl-footer-payment-icons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.aepl-footer-payment-placeholder {
+  width: 2rem;
+  height: 1.2rem;
+  background-color: #ddd;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+/* Responsive Breakpoints */
+@media (min-width: 600px) {
+  .aepl-footer {
+    padding: 30px;
+  }
+
+  .aepl-footer-grid {
+    gap: 50px;
+  }
+
+  .aepl-footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+@media (min-width: 768px) {
+  .aepl-footer {
+    padding: 40px 50px;
+  }
+
+  .aepl-footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 70px;
+  }
+}
+
+@media (min-width: 992px) {
+  .aepl-footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 100px;
+  }
+}

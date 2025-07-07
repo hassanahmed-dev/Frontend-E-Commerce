@@ -1,0 +1,107 @@
+.testimonial-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    position: relative;
+  }
+  
+  .testimonial-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .testimonial-indicator {
+    width: 15px;
+    height: 32px;
+    background-color: rgba(229, 46, 6, 1); /* orange-600 */
+    margin-right: 12px;
+  }
+  
+  .testimonial-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(229, 46, 6, 1);
+    font-family: 'Poppins';
+  }
+  
+  .testimonial-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .testimonial-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937; /* gray-800 */
+    font-family: 'Poppins';
+  }
+  
+  .nav-buttons-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .testimonial-nav-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .testimonial-nav-button {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 9999px;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .testimonial-nav-button:hover {
+    background-color: #f3f4f6; /* gray-100 */
+  }
+  
+  .testimonial-card {
+    background-color: #fff;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    height: 150px;
+    transition: transform 0.2s;
+    padding-bottom: 50px;
+  }
+
+  .testimonial-rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 12px;
+  }
+  
+  .testimonial-star {
+    color: #d1d5db; /* gray-300 */
+  }
+  
+  .testimonial-star.filled {
+    color: #facc15; /* yellow-400 */
+  }
+  
+  .testimonial-quote {
+    font-size: 14px;
+    color: #4b5563; /* gray-600 */
+    font-family: 'Poppins';
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  
+  .testimonial-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937; /* gray-800 */
+    font-family: 'Poppins';
+  }

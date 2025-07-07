@@ -1,0 +1,618 @@
+/* Custom CSS for Checkout page */
+.checkout-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .breadcrumb a {
+    color: #666;
+    text-decoration: none;
+  }
+  
+  .breadcrumb a:hover {
+    color: #333;
+  }
+  
+  h1 {
+    font-family: "Poppins", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  h2 {
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .checkout-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .checkout-content {
+      flex-direction: row;
+    }
+  }
+  
+  .billing-details {
+    flex: 1;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .form-row {
+      flex-direction: row;
+    }
+  
+    .form-row > .ant-form-item {
+      width: 100%;
+    }
+  }
+  
+  .three-columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .three-columns {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+  
+  .order-summary {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    align-self: flex-start;
+  }
+  
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .order-item {
+    display: flex;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .item-image {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 250, 249, 1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 1rem;
+  }
+  
+  .item-details {
+    flex: 1;
+  }
+  
+  .item-name {
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .item-quantity {
+    font-weight: normal;
+    color: #666;
+  }
+  
+  .item-color {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 1);
+  }
+  
+  .item-price {
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .summary-totals {
+    margin-top: 1.5rem;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 600;
+  }
+  
+  .item-count {
+    font-weight: normal;
+    color: #666;
+    font-size: 13px;
+  }
+  
+  .total {
+    font-weight: 600;
+    font-size: 18px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .place-order-button {
+    width: 100%;
+    height: 44px;
+    background-color: rgba(229, 46, 6, 1);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  .place-order-button:hover,
+  .place-order-button:focus {
+    background-color: #d63515;
+    border-color: #d63515;
+  }
+  
+  /* Override Ant Design styles */
+  .ant-form-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #333;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .ant-input,
+  .ant-select {
+    height: 42px;
+    border-radius: 4px;
+    font-family: "Poppins", sans-serif;
+    background-color: #f5f5f5;
+    border: none;
+  }
+  
+  .ant-select-selector {
+    height: 42px !important;
+    background-color: #f5f5f5 !important;
+    border: none !important;
+    padding: 0 11px !important;
+    display: flex;
+    align-items: center;
+  }
+  
+  .ant-select-selection-item {
+    line-height: 42px !important;
+  }
+  
+  .ant-btn {
+    font-family: "Poppins", sans-serif;
+    border-radius: 4px;
+  }
+  
+
+  .section-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 1.5rem 0;
+    width: 100%;
+  }
+  
+  
+.shipping-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #000;
+}
+
+.shipping-subtitle {
+  color: #333;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.radio-container {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 24px;
+}
+
+.custom-radio-group {
+  width: 100%;
+}
+
+.radio-option {
+  padding: 16px 0;
+}
+
+.radio-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 8px 0;
+}
+
+.custom-radio {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+}
+
+.custom-radio .ant-radio {
+  margin-right: 12px;
+}
+
+.address-fields {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #dcd6d6;
+}
+
+.button-container {
+  margin-top: 32px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-container .ant-btn-primary {
+  background-color: rgba(0, 0, 0, 1);
+  border-color: rgba(0, 0, 0, 1);
+  padding: 8px 24px;
+  height: auto;
+  font-size: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .shipping-container {
+    padding: 16px;
+  }
+
+  .shipping-title {
+    font-size: 24px;
+  }
+
+  .radio-container {
+    padding: 16px;
+  }
+}
+
+
+.shipping-container2 {
+  font-family: 'Poppins';
+  
+}
+
+.shipping-container2 h3{
+  margin-bottom: 12px;
+}
+
+.shipping-box2 {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.shipping-header2 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+.shipping-details2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.note2 {
+  font-size: 12px;
+  color: gray;
+  margin-top: 0;
+}
+
+.payment-container {
+  margin-top: 40px;
+}
+
+
+.payment-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.payment-subtitle {
+  color: #444;
+  font-size: 14px;
+  margin-bottom: 24px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.payment-box-ui {
+  background: #f7f7f7;
+  border-radius: 16px;
+  padding: 32px 32px 16px 32px;
+  margin-bottom: 18px;
+  box-shadow: none;
+  border: none;
+}
+
+.payment-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.payment-radio input[type="radio"] {
+  margin-top: 4px;
+  accent-color: #222;
+  width: 18px;
+  height: 18px;
+}
+
+.payment-note {
+  color: #444;
+  font-size: 14px;
+  margin: 0 0 12px 30px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.payment-icons-row {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 24px 30px;
+  align-items: center;
+}
+
+.icon-img img {
+  display: block;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  padding: 2px 8px;
+}
+
+.payment-form-ui {
+  margin: 0 0 0 30px;
+}
+
+.payment-form-row {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.payment-form-row input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #bdbdbd;
+  border-radius: 7px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.payment-form-row input:focus {
+  border: 2px solid #222;
+}
+
+.input-security-wrapper-ui {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.input-security-wrapper-ui input {
+  width: 100%;
+  padding-right: 36px;
+}
+
+.eye-button-ui {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0;
+  color: #888;
+}
+
+.payment-divider-ui {
+  margin: 24px 0 0 0;
+  border: none;
+  border-top: 1.5px solid #e0e0e0;
+}
+
+@media (max-width: 600px) {
+  .payment-inner {
+    padding: 0 8px;
+  }
+  .payment-box-ui {
+    padding: 18px 8px 8px 8px;
+  }
+  .payment-form-ui, .payment-icons-row, .payment-note {
+    margin-left: 0;
+  }
+  .payment-form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+.payment-box-ui {
+  background: #f7f7f7;
+  border-radius: 16px;
+  padding: 32px 32px 16px 32px;
+  margin-bottom: 18px;
+  box-shadow: none;
+  border: none;
+}
+
+.payment-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.payment-radio-option {
+  padding: 0 0 0 0;
+}
+
+.custom-radio .ant-radio-inner {
+  border-width: 2px;
+}
+
+.payment-divider-ui {
+  margin: 24px 0 24px 0;
+  border: none;
+  border-top: 1.5px solid #e0e0e0;
+}
+
+.payment-note {
+  color: #444;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.payment-icons-row {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 24px 0;
+  align-items: center;
+}
+
+.icon-img img {
+  display: block;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  padding: 2px 8px;
+}
+
+.payment-form-ui {
+  margin: 0 0 0 0;
+}
+
+.payment-form-row {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.payment-form-row input,
+.payment-form-row .ant-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #bdbdbd;
+  border-radius: 7px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.payment-form-row input:focus,
+.payment-form-row .ant-input:focus {
+  border: 2px solid #222;
+}
+
+.input-security-wrapper-ui {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.input-security-wrapper-ui input,
+.input-security-wrapper-ui .ant-input {
+  width: 100%;
+  padding-right: 36px;
+}
+
+.eye-button-ui {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 0;
+  color: #888;
+}
+
+.stripe-like-input {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  box-sizing: border-box;
+  height: 44px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 8px;
+}
+.stripe-like-input:focus {
+  border-color: #2684FF;
+}

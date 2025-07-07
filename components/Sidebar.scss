@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.sidebar {
+  width: 200px;
+  background: #fff;
+  border-right: 1px solid #ececec;
+  padding: 12px 14px 14px 16px;
+  display: flex;
+  flex-direction: column;  
+}
+.sidebar-title {
+  font-size: 22px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.sidebar-section p {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    vertical-align: middle;
+    color: rgba(139, 144, 154, 1);
+}
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar-nav li {
+  /* padding: 10px 10px; */
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgba(139, 144, 154, 1);
+  cursor: pointer;
+  font-family: 'Poppins';
+  transition: background 0.2s;
+}
+.sidebar-nav li.active, .sidebar-nav li:hover {
+  background: #f2f2f2;
+  font-weight: 600;
+  font-family: 'Poppins';
+  color: #222;
+}
+
+.sidebar-section {
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0px;
+    vertical-align: middle;
+    color: rgba(139, 144, 154, 1);
+}
+
+
+.sidebar-section {
+  font-size: 0.85rem;
+  color: #b0b0b0;
+  font-weight: 600;
+  margin: 1.2rem 0 0.5rem 0.5rem;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 1100px) {
+
+  .sidebar {
+    width: 160px;
+    padding: 1.2rem 0.5rem;
+  }
+
+}
+.sidebar-nav ul li {
+  list-style: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar-nav ul li:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar-nav ul li a,
+.sidebar-nav ul a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sidebar-nav ul a {
+  display: block;
+}

@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.container2, .container2 * {
+  font-family: 'Poppins', sans-serif;
+}/* Existing CSS remains the same, append or update the following */
+
+.container2 {
+   max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px;
+  display: flex;
+}
+
+.wishlist-empty {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.wishlist-icon {
+  margin-bottom: 20px;
+  background: #e9f5ea;
+  border-radius: 50%;
+  width: 100px; /* Adjusted to fit the image */
+  height: 100px; /* Adjusted to fit the image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wishlist-icon img {
+  width: 40px; /* Match the width attribute in JSX */
+  height: 40px; /* Match the height attribute in JSX */
+}
+
+.wishlist-title {
+  font-size: 24px;
+  font-family: 'Poppins';
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 10px;
+}
+
+.wishlist-text {
+  font-size: 14px;
+  color: #6c757d;
+  font-family: 'Poppins';
+  margin-bottom: 20px;
+}
+
+.wishlist-button {
+  background: rgba(229, 46, 6, 1);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Poppins';
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.wishlist-button:hover {
+  background: #c82333;
+}
+
+
+.sidebar2 {
+  width: 250px;
+  padding: 20px;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 20px;
+  font-weight: 500;
+  font-family: 'Poppins';
+}
+
+.breadcrumb-link {
+  color: #777;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  color: #333;
+}
+
+.breadcrumb-current {
+  color: rgba(0, 0, 0, 1);
+}
+
+.welcome2 {
+  margin-bottom: 30px;
+}
+
+.alag {
+  display: flex;
+}
+
+.section-indicator {
+  width: 5px;
+  border-radius: 12px;
+  height: 32px;
+  background-color: rgba(229, 46, 6, 1);
+  margin-right: 8px;
+}
+
+.section-indicator-active {
+  width: 5px;
+  border-radius: 12px;
+  height: 32px;
+  background: rgba(0, 0, 0, 1);
+  margin-right: 8px;
+}
+
+.welcome-title2 {
+  font-size: 20px;
+  font-family: 'Poppins';
+  font-weight: 600;
+  margin: 5px;
+}
+
+.welcome-text2 {
+  font-size: 14px;
+  font-family: 'Poppins';
+  color: #6c757d;
+  margin: 0;
+}
+
+.nav2 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item2 {
+  margin-bottom: 2px;
+}
+
+.nav-link2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: #666;
+  border-radius: 0;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Poppins';
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.nav-link2:hover {
+  background-color: #f5f5f5;
+}
+
+.nav-link2.active {
+  background-color: #f0f0f0;
+  border-left: 3px solid rgba(0, 0, 0, 1);
+  color: #333;
+  font-weight: 500;
+  font-family: 'Poppins';
+}
+
+.main-content2 {
+  flex: 1;
+  padding: 30px;
+}
+
+.header2 {
+  margin-bottom: 30px;
+}
+
+.header-title2 {
+  font-size: 24px;
+  font-family: 'Poppins';
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: #212529;
+}
+
+.section2 {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.section-title2 {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Poppins';
+  margin: 0 0 20px 0;
+  color: #212529;
+}
+
+.wishlist-products-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  justify-items: center;
+  margin-left: 260px; /* Adjust if sidebar width is different */
+  padding: 2rem 0;
+}
+
+/* Product Card */
+.product-card {
+  position: relative;
+  /* border: 1px solid #e5e5e5; */
+  /* border-radius: 8px; */
+  overflow: hidden;
+  /* transition: transform 0.3s ease; */
+}
+
+.discount-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.wishlist-button, .quickview-button {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+  padding: 6px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: none;
+}
+
+.wishlist-button:hover, .quickview-button:hover {
+  background-color: #f3f4f6;
+}
+
+.wishlist-button {
+  top: 8px;
+  right: 8px;
+}
+
+.quickview-button {
+  top: 48px;
+  right: 8px;
+}
+
+.product-image-container {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-color: rgba(255, 250, 249, 1);
+  overflow: hidden;
+}
+
+.product-image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.add-to-cart-container {
+  opacity: 0;
+  transition: opacity 0.3s;
+  position: absolute;
+  bottom: 3rem;
+  left: 0;
+  right: 0;
+}
+
+.product-card:hover .add-to-cart-container {
+  opacity: 1;
+}
+
+.product-title, .product-name {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.current-price {
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.original-price {
+  color: #6b7280;
+  text-decoration: line-through;
+  font-size: 14px;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.rating-stars {
+  display: flex;
+}
+
+.star-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.star-filled {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+.star-empty {
+  color: #d1d5db;
+}
+
+.review-count {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Responsive styles for wishlist page
+@media (max-width: 900px) {
+  .container2 {
+    flex-direction: column;
+    padding: 0 4vw;
+  }
+  .sidebar2 {
+    width: 100%;
+    padding: 12px 0 0 0;
+    margin-bottom: 18px;
+  }
+  .main-content2 {
+    padding: 16px 0 0 0;
+  }
+  .wishlist-products-section {
+    margin-left: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .container2 {
+    flex-direction: column;
+    padding: 0 2vw;
+  }
+  .sidebar2 {
+    width: 100%;
+    padding: 8px 0 0 0;
+    margin-bottom: 10px;
+  }
+  .main-content2 {
+    padding: 4px 0 0 0;
+  }
+  .header-title2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .section2 {
+    padding: 8px;
+    border-radius: 6px;
+  }
+  .section-title2 {
+    font-size: 13px;
+  }
+  .wishlist-products-section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-left: 0;
+    padding: 0.5rem 0;
+  }
+  .product-card {
+    padding: 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 10px;
+  }
+  .product-title, .product-name {
+    font-size: 14px;
+  }
+  .product-price {
+    gap: 4px;
+    font-size: 13px;
+  }
+  .current-price {
+    font-size: 14px;
+  }
+  .original-price {
+    font-size: 12px;
+  }
+  .product-rating {
+    gap: 2px;
+    font-size: 12px;
+  }
+  .star-icon {
+    width: 13px;
+    height: 13px;
+  }
+  .wishlist-button, .quickview-button {
+    width: 36px;
+    height: 36px;
+    padding: 4px;
+  }
+  .wishlist-empty {
+    padding: 18px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  .wishlist-title {
+    font-size: 16px;
+  }
+  .wishlist-icon {
+    width: 60px;
+    height: 60px;
+  }
+  .wishlist-icon img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 400px) {
+  .wishlist-empty {
+    padding: 8px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+  .wishlist-title {
+    font-size: 13px;
+  }
+  .wishlist-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .wishlist-icon img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+
+

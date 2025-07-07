@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.reset-password-container, .reset-password-container * {
+  font-family: 'Poppins', sans-serif;
+} 
+/* Custom CSS for Reset Password page */
+.reset-password-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    font-family: "Poppins";
+  }
+  
+  .image-section {
+    flex: 1;
+    position: relative;
+    display: none;
+  }
+  
+  .form-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background-color: white;
+  }
+  
+  .form-content {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  h1 {
+    font-family: "Poppins";
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .subtitle {
+    color: #666;
+    margin-bottom: 24px;
+    font-family: "Poppins";
+    font-size: 14px;
+  }
+  
+  /* Override Ant Design styles */
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+  
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #333;
+    font-family: "Poppins";
+  }
+  
+  .ant-input,
+  .ant-input-password {
+    height: 42px;
+    border-radius: 4px;
+    font-family: "Poppins";
+  }
+  
+  .ant-form-item-extra {
+    font-size: 12px;
+    color: #666;
+    font-family: "Poppins";
+  }
+  
+  .error-message {
+    color: #ff4d4f;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-family: "Poppins";
+  }
+  
+  .reset-button {
+    width: 40%;
+    max-width: 180px;
+    height: 44px;
+    background-color: #e63b19;
+    border-color: #e63b19;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 16px;
+    margin-top: 8px;
+    font-family: "Poppins";
+  }
+  
+  .reset-button:hover,
+  .reset-button:focus {
+    background-color: #d63515;
+    border-color: #d63515;
+  }
+  
+  /* Media query for larger screens */
+  @media (min-width: 768px) {
+    .image-section {
+      display: block;
+    }
+  }
+  

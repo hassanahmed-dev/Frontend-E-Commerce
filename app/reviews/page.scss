@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.reviews, .reviews * {
+  font-family: 'Poppins', sans-serif;
+}
+
+.reviews {
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+  .reviews-main {
+    flex: 1;
+    padding: 30px 30px 38px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dashboard-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .dashboard-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .notif-icon, .profile-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f2f2f2;
+    font-size: 22px;
+    transition: box-shadow 0.2s;
+  }
+  .profile-icon {
+    background: #e0e7ff;
+  }
+  
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.review-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stars .star-filled {
+    color: #FFD700; /* Gold color for filled stars */
+}
+
+.stars .star-empty {
+    color: #ccc; /* Grey color for empty stars */
+}
+
+.delete-icon {
+    cursor: pointer;
+    color: #ff4d4f; /* Red color for delete icon */
+    font-size: 20px;
+}
+
+.review-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.product-name-link {
+    text-decoration: none;
+    color: rgba(229, 46, 6, 1); /* A blue color for links */
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block; 
+    
+}
+
+.product-name-link:hover {
+    /* text-decoration: underline; */
+}
+
+.review-card p {
+    color: #666;
+    font-size: 0.9em;
+    flex-grow: 1;
+}
+
+.reviews-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding-bottom: 20px; /* Add some padding to the bottom */
+}
+
+.reviews-actions button {
+    background-color: rgba(229, 46, 6, 1);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.reviews-actions button:hover {
+    background-color: rgba(200, 40, 0, 1);
+}
+  

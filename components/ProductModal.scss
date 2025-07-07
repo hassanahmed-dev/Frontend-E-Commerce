@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.modal-overlay * {
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-form .form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.modal-form .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.modal-form label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    resize: none;
+}
+
+.modal-form input[type="text"],
+.modal-form select,
+.modal-form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width */
+    background-color: #f8f8f8; /* Light grey background */
+    border: 1px solid #e0e0e0;
+    resize: none; /* Light grey border */
+}
+
+.modal-form input::placeholder,
+.modal-form textarea::placeholder {
+    color: #bbb;
+    resize: none;
+}
+
+.modal-form textarea {
+    resize: none;
+    min-height: 80px;
+}
+
+.modal-form .full-width {
+    flex: none;
+    width: 100%;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.upload-btn {
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8f8f8; /* Light grey background */
+    color: #333;
+    font-size: 14px;
+    border: 1px solid #e0e0e0; /* Light grey border */
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.color-stock-row {
+    align-items: flex-end;
+}
+
+.remove-color-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0;
+    margin-left: 10px;
+    align-self: center;
+}
+
+.add-more-colors-btn {
+    background: #f0f0f0;
+    border: 1px dashed #ccc;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+    width: 100%;
+    background-color: #f8f8f8; /* Light grey background */
+    border: 1px dashed #e0e0e0; /* Light grey dashed border */
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.cancel-btn {
+    background: #f0f0f0; /* Light grey background */
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add-edit-btn {
+    background: rgba(229, 46, 6, 1); /* Red color from your previous styles */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-form .form-row {
+        flex-direction: column;
+    }
+}
+
+.modal-content.reviews-modal {
+    background: #fff;
+    border-radius: 10px;
+    width: 90vw;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px 24px 16px 24px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.modal-close {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.review-card {
+    background: #fafbfc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px 18px 12px 18px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.review-stars {
+    margin-bottom: 6px;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.review-text {
+    font-size: 14px;
+    color: #555;
+    margin-top: 2px;
+    word-break: break-word;
+}
+
+@media (max-width: 700px) {
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+    .modal-content.reviews-modal {
+        padding: 12px 4px 8px 4px;
+    }
+} 

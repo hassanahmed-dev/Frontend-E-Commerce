@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.privacyContainer, .privacyContainer * {
+  font-family: 'Poppins', sans-serif;
+}
+.privacyContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    color: #333;
+    line-height: 1.6;
+  
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+      text-align: center;
+    }
+  
+    .lastUpdated {
+      text-align: center;
+      color: #666;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+  
+    .section {
+      margin-bottom: 2.5rem;
+  
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: rgba(229, 46, 6, 1);
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+  
+      p {
+        margin-bottom: 1rem;
+      }
+  
+      ul {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+  
+        li {
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    .privacyContainer {
+      padding: 1rem;
+  
+      h1 {
+        font-size: 2rem;
+      }
+  
+      .section h2 {
+        font-size: 1.3rem;
+      }
+    }
+  }
