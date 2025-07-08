@@ -61,6 +61,8 @@ export default function DashboardPage() {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [revenueChartData, setRevenueChartData] = useState([]);
   const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [topRatedProducts, setTopRatedProducts] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -104,6 +106,155 @@ export default function DashboardPage() {
     if (!topRatedProducts.length) return [];
     return [...topRatedProducts].sort((a, b) => b.orderCount - a.orderCount).slice(0, 5);
   }, [topRatedProducts]);
+
+   // Fetch orders from backend
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        const res = await fetch(`${backendUrl}/api/orders`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  // Add filter state
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  // Filter orders based on active filter
+  const filteredOrders = orders
+    .filter(order => {
+      if (activeFilter === 'All') return true;
+      if (activeFilter === 'New' && order.orderStatus === 'pending') return true;
+      if (activeFilter === 'Accepted' && order.orderStatus === 'accepted') return true;
+      if (activeFilter === 'Out for Delivery' && order.orderStatus === 'out-for-delivery') return true;
+      if (activeFilter === 'Delivered' && order.orderStatus === 'delivered') return true;
+      if (activeFilter === 'Canceled' && (order.orderStatus === 'cancelled' || order.orderStatus === 'failed')) return true;
+      return false;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  // Available status options
+  const statusOptions = [
+    { label: 'New', color: 'status-new' },
+    { label: 'Accepted', color: 'status-accepted' },
+    { label: 'Out for Delivery', color: 'status-out' },
+    { label: 'Delivered', color: 'status-delivered' },
+    { label: 'Canceled', color: 'status-cancelled' },
+  ];
+
+  // Status mapping for admin and user
+  const statusMap = {
+    pending: { label: "New", color: "#1976d2" },
+    accepted: { label: "Order Accepted", color: "#17A2B8" },
+    "out-for-delivery": { label: "Out For Delivery", color: "#f5b50a" },
+    delivered: { label: "Delivered", color: "#43a047" },
+    cancelled: { label: "Declined", color: "#E53911" },
+    failed: { label: "Declined", color: "#E53911" },
+  };
+
+  // Handle status change (for UI only, not backend update)
+  const handleStatusChange = (index, newStatus) => {
+    const updatedOrders = [...orders];
+    updatedOrders[index].uiStatus = {
+      label: newStatus.label,
+      type: 'dropdown',
+      color: newStatus.color,
+      disabled: newStatus.label === 'Delivered' || newStatus.label === 'Canceled',
+    };
+    setOrders(updatedOrders);
+  };
+
+  // Helper to map order data to drawer format
+  const mapOrderToDrawer = (order) => {
+    return {
+      id: order.id || order._id,
+      items: order.cartItems?.map(item => ({
+        image: item.image || "/product1.png",
+        name: item.name,
+        qty: item.quantity,
+        color: item.color,
+        price: item.price,
+      })) || [],
+      currentStatus: order.paymentStatus === "pending"
+          ? "Order Received"
+        : order.paymentStatus === "paid"
+          ? "Order Accepted"
+        : order.paymentStatus === "failed"
+          ? "Declined"
+          : "Order Received",
+      customer: {
+        name: order.userName || (order.user && order.user.name) || "",
+        phone: order.billingDetails?.phone || "",
+        email: order.billingDetails?.email || "",
+      },
+      shipping: {
+        country: order.shippingDetails?.country || order.billingDetails?.country || "",
+        state: order.shippingDetails?.state || order.billingDetails?.state || "",
+        city: order.shippingDetails?.city || order.billingDetails?.city || "",
+        address: order.shippingDetails?.address || order.billingDetails?.address || "",
+        postalCode: order.billingDetails?.postalCode || "",
+        paymentMethod: order.paymentMethod,
+        invoiceNo: order.id || order._id,
+      },
+      statusUpdates: [
+        {
+          date: new Date(order.createdAt).toLocaleString(),
+          status: order.paymentStatus === "pending"
+            ? "Order Received"
+            : order.paymentStatus === "paid"
+            ? "Order Accepted"
+            : order.paymentStatus === "failed"
+            ? "Declined"
+            : "Order Received",
+        },
+      ],
+      total: order.finalTotal || order.total || 0,
+    };
+  };
+
+  // Handler for status change from drawer (UI only)
+  const handleDrawerStatusChange = async (newStatus) => {
+    // Refetch orders after status change
+    setDrawerOpen(false);
+    setLoading(true);
+    try {
+      const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const res = await fetch(`${backendUrl}/api/orders`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div>Loading orders...</div>;
+  if (error) return <div>Error: {error}</div>;
+
 
   return (
     <ProtectedRoute adminOnly>
@@ -194,92 +345,70 @@ export default function DashboardPage() {
             <Link href="/order-management" className="view-all">View all</Link>
           </div>
           <table className="orders-table">
-            <thead>
-            <tr>
-              <th>ID</th>
-              <th>Customer</th>
-              <th>Contact details</th>
-              <th>City</th>
-              <th>Ordered on</th>
-              <th>Status</th>
-              <th>Total</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-              {orders
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .slice(0, 5)
-                .map((order, idx) => (
-                  <tr key={order.id || order._id}>
-                  <td>
-                    <div>#{order.id || order._id}</div>
-                  </td>
-                  <td>
-                    <div>{order.billingDetails?.firstName}</div>
-                    <div>{order.billingDetails?.lastName}</div>
-                  </td>
-                  <td>
-                    <div>{order.billingDetails?.email}</div>
-                    <div>{order.billingDetails?.phone}</div>
-                  </td>
-                  <td>
-                    <span> {order.billingDetails?.city}</span>,<div>{order.billingDetails?.country}</div>
-                   
-                  </td>
-                  <td>{order.createdAt
-                    ? (() => {
-                        const d = new Date(order.createdAt);
-                        return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`;
-                      })()
-                    : "-"
-                  }</td>
-                  <td>
-                    <select
-                      className={`status-badge ${order.uiStatus?.color || 'status-new'}`}
-                      value={order.paymentStatus}
-                      onChange={async (e) => {
-                        const newStatus = e.target.value;
-                        try {
-                          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/${order._id}/status`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ status: newStatus }),
-                          });
-                          if (!res.ok) throw new Error('Failed to update status');
-                          const updatedOrder = await res.json();
-                          setOrders((prev) =>
-                            prev.map((o) => (o._id === order._id ? { ...o, paymentStatus: updatedOrder.paymentStatus } : o))
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Contact details</th>
+                    <th>City</th>
+                    <th>Ordered on</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.map((order, idx) => (
+                    <tr key={order._id}>
+                      <td>
+                        <div>#{order.id}</div>
+                      </td>
+                      <td>
+                        <div>{order.billingDetails?.firstName || order.userName || 'N/A'}</div>
+                        <div>{order.billingDetails?.lastName || ''}</div>
+                      </td>
+                      <td>
+                        <div>{order.billingDetails?.email || 'N/A'}</div>
+                        <div>{order.billingDetails?.phone || 'N/A'}</div>
+                      </td>
+                      <td>
+                        <span>{order.billingDetails?.city || 'N/A'}</span>,<div>{order.billingDetails?.country || 'N/A'}</div>
+                      </td>
+                      <td>{order.createdAt
+                        ? (() => {
+                            const d = new Date(order.createdAt);
+                            return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`;
+                          })()
+                        : "-"
+                      }</td>
+                      <td>
+                        {(() => {
+                          const statusKey = order.orderStatus || 'pending';
+                          const statusInfo = statusMap[statusKey] || { label: statusKey, color: '#888' };
+                          return (
+                            <span className={`status-badge`} style={{ color: statusInfo.color, fontWeight: 600 }}>
+                              {statusInfo.label}
+                            </span>
                           );
-                        } catch (err) {
-                          alert('Status update failed: ' + err.message);
-                        }
-                      }}
-                      style={{ padding: '4px 0px', borderRadius: 6, fontWeight: 500, fontSize: 13, border: 'none', cursor: 'pointer' }}
-                      disabled={order.paymentStatus === 'delivered' || order.paymentStatus === 'failed'}
-                    >
-                      <option value="pending">New</option>
-                      <option value="paid">Accepted</option>
-                      <option value="out-for-delivery">Out for Delivery</option>
-                      <option value="delivered">Delivered</option>
-                      <option value="failed">Canceled</option>
-                    </select>
-                  </td>
-                  <td>Rs:{order.finalTotal}</td>
-                  <td>
-                    <AiOutlineEye
-                      size={20}
-                      style={{ color: '#888', cursor: 'pointer' }}
-                      onClick={() => {
-                        setSelectedOrder(mapOrderToDrawer(order));
-                        setDrawerOpen(true);
-                      }}
-                    />
-                  </td>
-                </tr>
-                ))}
-            </tbody>
-          </table>
+                        })()}
+                      </td>
+                      <td>Rs:{order.finalTotal || order.total || 0}</td>
+                      <td>
+                        <AiOutlineEye
+                          size={20}
+                          style={{ color: '#888', cursor: 'pointer' }}
+                          onClick={() => {
+                            // Always get the latest order object from orders list
+                            const latestOrder = orders.find(o => o._id === order._id);
+                            setSelectedOrder(mapOrderToDrawer(latestOrder || order));
+                            setDrawerOpen(true);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
         </section>
 
         {/* Bottom Section: Top Selling Category & Best Selling Products */}
@@ -324,6 +453,7 @@ export default function DashboardPage() {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         order={selectedOrder}
+        onStatusChange={handleDrawerStatusChange}
       />
     </div>
     </ProtectedRoute>
