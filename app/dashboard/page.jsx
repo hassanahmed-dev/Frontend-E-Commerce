@@ -358,7 +358,7 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order, idx) => (
+                  {filteredOrders.slice(0, 5).map((order, idx) => (
                     <tr key={order._id}>
                       <td>
                         <div>#{order.id}</div>
