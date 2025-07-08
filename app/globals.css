@@ -1,4 +1,11 @@
 *{
     padding: 0;
     margin: 0;
-}
+}:root {
+    --font-poppins: "Poppins", sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-poppins); /* use it globally */
+  }
+  

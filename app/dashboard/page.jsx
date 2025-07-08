@@ -71,10 +71,9 @@ export default function DashboardPage() {
       const user = JSON.parse(localStorage.getItem('user'));
       const token = user?.token;
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
       // Fetch summary data
-      const summaryRes = await fetch(`${backendUrl}/api/orders/summary`, { headers });
+      const summaryRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/summary`, { headers });
       const summary = await summaryRes.json();
       setTotalOrders(summary.totalOrders || 0);
       setTotalSales(summary.totalSales || 0);
@@ -82,23 +81,29 @@ export default function DashboardPage() {
       setTotalRevenue(summary.totalRevenue || 0);
 
       // Fetch revenue chart data (fixed endpoint)
-      const revenueChartRes = await fetch(`${backendUrl}/api/orders/revenue`, { headers });
+      const revenueChartRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/revenue`, { headers });
       const revenueChart = await revenueChartRes.json();
       setRevenueChartData(Array.isArray(revenueChart) ? revenueChart : []);
 
       // Fetch recent orders
-      const ordersRes = await fetch(`${backendUrl}/api/orders`, { headers });
+      const ordersRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders`, { headers });
       const ordersData = await ordersRes.json();
       setOrders(Array.isArray(ordersData) ? ordersData : []);
 
-      // Fetch top rated products
-      const topProductsRes = await fetch(`${backendUrl}/api/products/top-rated`, { headers });
-      const topProducts = await topProductsRes.json();
-      setTopRatedProducts(Array.isArray(topProducts) ? topProducts : []);
+      // Fetch best selling products from new API
+      const bestSellingRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/product-order-counts`, { headers });
+      const bestSellingData = await bestSellingRes.json();
+      setTopRatedProducts(Array.isArray(bestSellingData) ? bestSellingData : []);
     }
 
     fetchDashboardData();
   }, []);
+
+  // Best selling products by order count (from API)
+  const bestSellingProducts = React.useMemo(() => {
+    if (!topRatedProducts.length) return [];
+    return [...topRatedProducts].sort((a, b) => b.orderCount - a.orderCount).slice(0, 5);
+  }, [topRatedProducts]);
 
   return (
     <ProtectedRoute adminOnly>
@@ -236,8 +241,7 @@ export default function DashboardPage() {
                       onChange={async (e) => {
                         const newStatus = e.target.value;
                         try {
-                          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-                          const res = await fetch(`${backendUrl}/api/orders/${order._id}/status`, {
+                          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/${order._id}/status`, {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ status: newStatus }),
@@ -280,55 +284,28 @@ export default function DashboardPage() {
 
         {/* Bottom Section: Top Selling Category & Best Selling Products */}
         <section className="bottom-section">
-          {/* <div className="top-category">
-            <div className="section-title">Top Selling Category</div>
-            <div className="category-bubbles">
-              <div className="bubble tshirt">
-                <div className="bubble-text">
-                  T-shirt<br />
-                  <span className="bubble-number">4567</span><br />
-                  <span className="bubble-text">This month</span>
-                </div>
-              </div>
-              <div className="bubble jeans">
-                <div className="bubble-text">
-                  Jeans<br />
-                  <span className="bubble-number">3167</span><br />
-                  <span className="bubble-text">This month</span>
-                </div>
-              </div>
-              <div className="bubble kids">
-                <div className="bubble-text">
-                  Kid's Collection<br />
-                  <span className="bubble-number">845</span><br />
-                  <span className="bubble-text">This month</span>
-                </div>
-              </div>
-            </div>
-          </div> */}
           <div className="best-products">
             <div className="section-title">Best Selling Products</div>
             <table className="products-table">
               <thead>
                 <tr>
                   <th>Product</th>
-                  <th>Ratings</th>
+                  <th>No. of Orders</th>
                   <th>Status</th>
                   <th>Price</th>
                 </tr>
               </thead>
               <tbody>
-                {topRatedProducts.slice(0, 5).map((product) => (
+                {bestSellingProducts.map((product) => (
                   <tr key={product._id}>
                     <td>
                       <img src={product.imageUrl || "/product1.png"} alt={product.productName} style={{ width: 30, height: 30, marginRight: 10, verticalAlign: "middle" }} />
                       <b>{product.productName}</b>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 600, color: '#f5b50a', fontSize: 18 }}>
-                        ★
+                      <span style={{ fontWeight: 500, color: 'rgba(0, 0, 0, 1)', fontSize: 15 }}>
+                        {product.orderCount}
                       </span>
-                      <span style={{ marginLeft: 6, color: '#222' }}>{Number(product.ratings || 0).toFixed(1)}</span>
                     </td>
                     <td>
                       <span className={`status-dot ${product.status === 'In Stock' ? 'status-green-dot' : 'status-red-dot'}`}></span>

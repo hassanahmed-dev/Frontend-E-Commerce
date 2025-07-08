@@ -166,11 +166,11 @@ export default function WishlistPage() {
                     const productId = String(product.id || product._id);
                     return (
                       <div key={productId} className="product-card">
-                      {product.discountedPrice && product.discountedPrice < product.price && (
+                      {/* {product.discountedPrice && product.discountedPrice < product.price && (
                         <div className="discount-badge">
                           -{Math.round(100 - (product.discountedPrice / product.price) * 100)}%
                         </div>
-                      )}
+                      )} */}
                       <div className="action-buttons">
                         <button
                           className="action-button-heart"

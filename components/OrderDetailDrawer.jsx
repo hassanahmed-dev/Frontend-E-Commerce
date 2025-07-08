@@ -13,15 +13,6 @@ const statusSteps = [
   "Delivered",
 ];
 
-const statusMap = {
-  pending: { label: "Order Received", color: "#1976d2" },
-  accepted: { label: "Order Accepted", color: "#17A2B8" },
-  "out-for-delivery": { label: "Out For Delivery", color: "#f5b50a" },
-  delivered: { label: "Delivered", color: "#43a047" },
-  cancelled: { label: "Declined", color: "#E53911" },
-  failed: { label: "Declined", color: "#E53911" },
-};
-
 const STATUS_MAP = {
   pending: { label: "Order Received", color: "#1976D2" },
   accepted: { label: "Order Accepted", color: "#43a047" },
@@ -35,46 +26,61 @@ const STATUS_STEPS = ["pending", "accepted", "out-for-delivery", "delivered"];
 const FINAL_STATUSES = ["delivered", "cancelled", "failed"];
 
 function getStatusOptions(currentStatus) {
-  if (currentStatus === "accepted") {
-    return [
-      { value: "out-for-delivery", label: STATUS_MAP["out-for-delivery"].label },
-      { value: "delivered", label: STATUS_MAP["delivered"].label },
-      { value: "cancelled", label: STATUS_MAP["cancelled"].label },
-    ];
+  console.log("getStatusOptions called with:", currentStatus); // Debug log
+  switch (currentStatus) {
+    case "accepted":
+      return [
+        { value: "out-for-delivery", label: STATUS_MAP["out-for-delivery"].label },
+        { value: "delivered", label: STATUS_MAP["delivered"].label },
+        { value: "cancelled", label: STATUS_MAP["cancelled"].label },
+      ];
+    case "out-for-delivery":
+      return [
+        { value: "delivered", label: STATUS_MAP["delivered"].label },
+        { value: "cancelled", label: STATUS_MAP["cancelled"].label },
+      ];
+    default:
+      return [];
   }
-  if (currentStatus === "out-for-delivery") {
-    return [
-      { value: "delivered", label: STATUS_MAP["delivered"].label },
-      { value: "cancelled", label: STATUS_MAP["cancelled"].label },
-    ];
-  }
-  return [];
 }
 
 function getStatusKey(order) {
   if (!order) return "pending";
   const validKeys = Object.keys(STATUS_MAP);
 
-  // Check orderStatus (key or label)
-  if (order.orderStatus && validKeys.includes(order.orderStatus)) return order.orderStatus;
+  // Check orderStatus
+  if (order.orderStatus && validKeys.includes(order.orderStatus)) {
+    console.log("Matched orderStatus:", order.orderStatus); // Debug log
+    return order.orderStatus;
+  }
   if (order.orderStatus) {
-    const labelToKey = {};
-    for (const [key, val] of Object.entries(STATUS_MAP)) {
-      labelToKey[val.label.toLowerCase()] = key;
+    const labelToKey = Object.fromEntries(
+      Object.entries(STATUS_MAP).map(([key, val]) => [val.label.toLowerCase(), key])
+    );
+    const matchedKey = labelToKey[order.orderStatus.toLowerCase()];
+    if (matchedKey) {
+      console.log("Matched label to key:", matchedKey); // Debug log
+      return matchedKey;
     }
-    if (labelToKey[order.orderStatus.toLowerCase()]) return labelToKey[order.orderStatus.toLowerCase()];
   }
 
-  // Check currentStatus (key or label)
-  if (order.currentStatus && validKeys.includes(order.currentStatus)) return order.currentStatus;
+  // Check currentStatus as fallback
+  if (order.currentStatus && validKeys.includes(order.currentStatus)) {
+    console.log("Matched currentStatus:", order.currentStatus); // Debug log
+    return order.currentStatus;
+  }
   if (order.currentStatus) {
-    const labelToKey = {};
-    for (const [key, val] of Object.entries(STATUS_MAP)) {
-      labelToKey[val.label.toLowerCase()] = key;
+    const labelToKey = Object.fromEntries(
+      Object.entries(STATUS_MAP).map(([key, val]) => [val.label.toLowerCase(), key])
+    );
+    const matchedKey = labelToKey[order.currentStatus.toLowerCase()];
+    if (matchedKey) {
+      console.log("Matched currentStatus label to key:", matchedKey); // Debug log
+      return matchedKey;
     }
-    if (labelToKey[order.currentStatus.toLowerCase()]) return labelToKey[order.currentStatus.toLowerCase()];
   }
 
+  console.log("Defaulting to pending, order:", order); // Debug log with order details
   return "pending";
 }
 
@@ -93,20 +99,17 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.order);
 
-  // Move all useState hooks to the top
   const [localOrder, setLocalOrder] = useState(order || {});
   const [declineReason, setDeclineReason] = useState("");
   const [drawerWidth, setDrawerWidth] = useState("50%");
   const [statusUpdatesOpen, setStatusUpdatesOpen] = useState(true);
-  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
-  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false); // Removed unused statusDropdownOpen
   const [cancelReason, setCancelReason] = useState("");
   const [pendingStatus, setPendingStatus] = useState(null);
   const [localDeclineReason, setLocalDeclineReason] = useState("");
 
-  // DEBUG: Log statusKey and orderStatus to verify mapping
   const statusKey = getStatusKey(localOrder);
-  console.log('DEBUG statusKey:', statusKey, 'orderStatus:', localOrder.orderStatus, localOrder);
+  console.log("Current statusKey:", statusKey, "Order:", localOrder); // Debug log
 
   useEffect(() => {
     setLocalOrder(order || {});
@@ -122,19 +125,13 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
     if (success && onStatusChange) {
       onStatusChange(localOrder.orderStatus);
     }
-    // eslint-disable-next-line
   }, [success]);
 
-  // Responsive drawer width
   useEffect(() => {
     const updateWidth = () => {
-      if (window.innerWidth <= 1100) {
-        setDrawerWidth("100%");
-      } else if (window.innerWidth <= 1440) {
-        setDrawerWidth("70%");
-      } else {
-        setDrawerWidth("50%");
-      }
+      if (window.innerWidth <= 1100) setDrawerWidth("100%");
+      else if (window.innerWidth <= 1440) setDrawerWidth("70%");
+      else setDrawerWidth("50%");
     };
     updateWidth();
     window.addEventListener("resize", updateWidth);
@@ -154,14 +151,19 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
       orderId: localOrder.orderId || localOrder.id || localOrder._id,
       status: "accepted",
       token,
-    }));
-    // Drawer close par state reset
+    })).then((action) => {
+      if (action.type.endsWith("fulfilled")) {
+        setLocalOrder({ ...localOrder, orderStatus: "accepted" });
+        if (onStatusChange) onStatusChange("accepted");
+      }
+    });
     setDeclineReason("");
     setCancelModalOpen(false);
     setCancelReason("");
     setPendingStatus(null);
     setLocalDeclineReason("");
   }
+
   function handleDecline() {
     if (!declineReason.trim()) return;
     const token = getToken();
@@ -171,38 +173,36 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
       reason: declineReason.trim(),
       cancelledBy: "admin",
       token,
-    }));
-    // Drawer close par state reset
+    })).then(() => {
+      setLocalDeclineReason(declineReason);
+    });
     setDeclineReason("");
     setCancelModalOpen(false);
     setCancelReason("");
     setPendingStatus(null);
-    setLocalDeclineReason("");
   }
+
   function handleDropdownChange(e) {
+    console.log("Dropdown changed to:", e.target.value); // Debug log
     const value = e.target.value;
     const token = getToken();
     if (value === "cancelled") {
-      const reason = prompt("Please provide a reason for cancelling this order:");
-      if (!reason) return;
-      dispatch(updateOrderStatus({
-        orderId: localOrder.orderId || localOrder.id || localOrder._id,
-        status: "cancelled",
-        reason,
-        cancelledBy: "admin",
-        token,
-      }));
+      setCancelModalOpen(true);
     } else {
       dispatch(updateOrderStatus({
         orderId: localOrder.orderId || localOrder.id || localOrder._id,
         status: value,
         token,
-      }));
+      })).then((action) => {
+        if (action.type.endsWith("fulfilled")) {
+          setLocalOrder({ ...localOrder, orderStatus: value });
+          if (onStatusChange) onStatusChange(value);
+        }
+      });
     }
   }
 
-  // Status steps index logic (use statusKey)
-  const statusStepsKeys = ['pending', 'accepted', 'out-for-delivery', 'delivered'];
+  const statusStepsKeys = ["pending", "accepted", "out-for-delivery", "delivered"];
 
   return (
     <>
@@ -210,7 +210,6 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
         open={open}
         onClose={() => {
           onClose();
-          // Drawer close par state reset
           setDeclineReason("");
           setCancelModalOpen(false);
           setCancelReason("");
@@ -221,36 +220,37 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
         closable={false}
         maskClosable={true}
         className="order-detail-drawer"
-        styles={{ body: { padding: 0, background: '#fff', overflow: 'auto', height: '100%' } }}
+        styles={{ body: { padding: 0, background: "#fff", overflow: "auto", height: "100%" } }}
         destroyOnClose
       >
-        {/* Header */}
         <div className="order-detail-drawer__header">
           <div>Order #{localOrder.orderId || localOrder.id || localOrder._id}</div>
-          <button className="order-detail-drawer__close" onClick={onClose}>&times;</button>
+          <button className="order-detail-drawer__close" onClick={onClose}>
+            ×
+          </button>
         </div>
 
-        {/* Cancelled Alert */}
+        {/* Cancelled Order Reason Display */}
         {statusKey === "cancelled" && (
           <div style={{
-            background: 'rgba(208, 38, 38, 0.05)',
-            border: 'none',
-            borderRadius: 4,
-            padding: '18px 20px 14px 20px',
-            margin: '18px 24px 0 24px',
+            background: '#fff6f6',
+            borderRadius: 6,
+            padding: '16px 20px',
+            marginBottom: 12,
             display: 'flex',
             alignItems: 'flex-start',
             gap: 12,
+            border: 'none',
           }}>
-            <svg style={{marginTop: 2, flexShrink: 0}} width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11" cy="11" r="11" fill="#FF4D4F" fillOpacity="0.12"/>
-              <path d="M11 6.5V12.5" stroke="#FF4D4F" strokeWidth="1.8" strokeLinecap="round"/>
-              <circle cx="11" cy="15.2" r="1.1" fill="#FF4D4F"/>
-            </svg>
+            <span style={{ color: '#E53911', fontSize: 22, marginTop: 2, flexShrink: 0 }}>
+              &#9888;
+            </span>
             <div>
-              <div style={{fontWeight: 700, color: 'rgba(0, 0, 0, 1)', fontSize: 16, marginBottom: 2}}>Order cancelled by Admin</div>
-              <div style={{fontWeight: 500, color: '#222', fontSize: 15}}>
-                <span style={{fontWeight: 600}}>Reason:</span> {localDeclineReason || localOrder.cancelReason || "The shipping address provided was incorrect or incomplete."}
+              <div style={{ fontWeight: 700, color: '#222', fontSize: 16, marginBottom: 2 }}>
+                Order cancelled by {localOrder.cancelledBy === 'user' ? 'You' : 'Admin'}
+              </div>
+              <div style={{ fontWeight: 500, color: '#222', fontSize: 15 }}>
+                <span style={{ fontWeight: 600 }}>Reason:</span> {localOrder.cancellationReason || 'No reason provided.'}
               </div>
             </div>
           </div>
@@ -258,73 +258,108 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
 
         <div className="section-divider"></div>
 
-        {/* Ordered Items */}
         <div className="order-detail-drawer__items">
           <div className="order-detail-drawer__section-title">Ordered Items</div>
-          {Array.isArray(localOrder.items) && localOrder.items.map((item, idx) => (
-            <div className="order-detail-drawer__item-row" key={idx}>
-              <img className="order-detail-drawer__item-img" src={item.image} alt={item.name} />
-              <div className="order-detail-drawer__item-info">
-                <div className="order-detail-drawer__item-name">{item.name} <span style={{ fontWeight: 400, color: "#888" }}>x {item.qty}</span></div>
-                <div className="order-detail-drawer__item-color">Color : <span
-                                        style={{
-                                          display: "inline-block",
-                                          width: "16px",
-                                          height: "12px",
-                                          backgroundColor: item.color,
-                                          border: "1px solid #ccc",
-                                          verticalAlign: "middle",
-                                          marginLeft: "5px",
-                                        }}
-                                      ></span></div>
+          {Array.isArray(localOrder.items) &&
+            localOrder.items.map((item, idx) => (
+              <div className="order-detail-drawer__item-row" key={idx}>
+                <img
+                  className="order-detail-drawer__item-img"
+                  src={item.image}
+                  alt={item.name}
+                />
+                <div className="order-detail-drawer__item-info">
+                  <div className="order-detail-drawer__item-name">
+                    {item.name}{" "}
+                    <span style={{ fontWeight: 400, color: "#888" }}>x {item.qty}</span>
+                  </div>
+                  <div className="order-detail-drawer__item-color">
+                    Color :{" "}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "16px",
+                        height: "12px",
+                        backgroundColor: item.color,
+                        border: "1px solid #ccc",
+                        verticalAlign: "middle",
+                        marginLeft: "5px",
+                      }}
+                    ></span>
+                  </div>
+                </div>
+                <div className="order-detail-drawer__item-price">Rs:{item.price}</div>
               </div>
-              <div className="order-detail-drawer__item-price">Rs:{item.price}</div>
-            </div>
-          ))}
+            ))}
         </div>
 
         <div className="section-divider"></div>
 
-        {/* Status Steps */}
         <div className="order-detail-drawer__status-steps">
           {statusSteps.map((step, idx) => {
-            // If cancelled/declined, only highlight up to the last status before cancellation/decline
-            const highlight = statusKey === 'cancelled' || statusKey === 'failed' ? idx < statusIndex : idx <= statusIndex;
+            const highlight =
+              statusKey === "cancelled" || statusKey === "failed"
+                ? idx < statusIndex
+                : idx <= statusIndex;
             return (
-            <div className="order-detail-drawer__status-step" key={step}>
-                <div className={`order-detail-drawer__status-circle${highlight ? " order-detail-drawer__status-circle--active" : ""}`}>{highlight ? "✓" : idx + 1}</div>
-                <div className={`order-detail-drawer__status-label${highlight ? " order-detail-drawer__status-label--active" : ""}`}>{step}</div>
-            </div>
+              <div className="order-detail-drawer__status-step" key={step}>
+                <div
+                  className={`order-detail-drawer__status-circle${
+                    highlight ? " order-detail-drawer__status-circle--active" : ""
+                  }`}
+                >
+                  {highlight ? "✓" : idx + 1}
+                </div>
+                <div
+                  className={`order-detail-drawer__status-label${
+                    highlight ? " order-detail-drawer__status-label--active" : ""
+                  }`}
+                >
+                  {step}
+                </div>
+              </div>
             );
           })}
         </div>
-        
-        {/* Status Progress Bar */}
+
         <div className="order-detail-drawer__progress-bar">
           <div
             className="order-detail-drawer__progress"
-            style={{ width: `${((statusKey === 'cancelled' || statusKey === 'failed' ? statusIndex : statusIndex + 1) / statusSteps.length) * 100}%` }}
+            style={{
+              width: `${
+                ((statusKey === "cancelled" || statusKey === "failed"
+                  ? statusIndex
+                  : statusIndex + 1) /
+                  statusSteps.length) *
+                100
+              }%`,
+            }}
           />
         </div>
 
         <div className="section-divider"></div>
 
-        {/* Info Sections */}
         <div className="order-detail-drawer__info-row">
           <div className="order-detail-drawer__info-card">
             <span className="order-detail-drawer__info-label">Customer Info</span>
             <div className="order-detail-drawer__info-list">
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Full name:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.customer?.name || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.customer?.name || ""}
+                </span>
               </div>
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Phone:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.customer?.phone || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.customer?.phone || ""}
+                </span>
               </div>
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Email:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.customer?.email || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.customer?.email || ""}
+                </span>
               </div>
             </div>
           </div>
@@ -333,53 +368,81 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
             <div className="order-detail-drawer__info-list">
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Country:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.country || ""}</span>
-                <span className="order-detail-drawer__info-row-label" style={{marginLeft: 14}}>State:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.state || ""}</span>
-                <span className="order-detail-drawer__info-row-label" style={{marginLeft: 14}}>City:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.city || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.country || ""}
+                </span>
+                <span
+                  className="order-detail-drawer__info-row-label"
+                  style={{ marginLeft: 14 }}
+                >
+                  State:
+                </span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.state || ""}
+                </span>
+                <span
+                  className="order-detail-drawer__info-row-label"
+                  style={{ marginLeft: 14 }}
+                >
+                  City:
+                </span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.city || ""}
+                </span>
               </div>
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Address:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.address || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.address || ""}
+                </span>
               </div>
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Postal Code:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.postalCode || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.postalCode || ""}
+                </span>
               </div>
               <div className="order-detail-drawer__info-row-item">
                 <span className="order-detail-drawer__info-row-label">Payment Method:</span>
-                <span className="order-detail-drawer__info-row-value">{localOrder.shipping?.paymentMethod || ""}</span>
-                <span className="order-detail-drawer__info-row-label" style={{marginLeft: 14}}>Invoice no:</span>
-                <span className="order-detail-drawer__info-row-value">#{localOrder.shipping?.invoiceNo || ""}</span>
+                <span className="order-detail-drawer__info-row-value">
+                  {localOrder.shipping?.paymentMethod || ""}
+                </span>
+                <span
+                  className="order-detail-drawer__info-row-label"
+                  style={{ marginLeft: 14 }}
+                >
+                  Invoice no:
+                </span>
+                <span className="order-detail-drawer__info-row-value">
+                  #{localOrder.shipping?.invoiceNo || ""}
+                </span>
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Status Updates */}
+
         <div className="order-detail-drawer__status-updates">
           <div
             className="order-detail-drawer__status-updates-card"
-            style={{marginTop: 20}}
+            style={{ marginTop: 20 }}
           >
             <div
               className="order-detail-drawer__status-updates-header"
               onClick={() => setStatusUpdatesOpen((open) => !open)}
-              style={{ cursor: 'pointer', userSelect: 'none' }}
+              style={{ cursor: "pointer", userSelect: "none" }}
               aria-expanded={statusUpdatesOpen}
               tabIndex={0}
             >
-              Order Status Updates
+              Order Status History
               <svg
                 width="20"
                 height="16"
                 viewBox="0 0 22 16"
                 style={{
                   marginLeft: 8,
-                  transform: statusUpdatesOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
-                  transition: 'transform 0.2s',
-                  display: 'inline-block',
+                  transform: statusUpdatesOpen ? "rotate(0deg)" : "rotate(-90deg)",
+                  transition: "transform 0.2s",
+                  display: "inline-block",
                 }}
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -391,132 +454,187 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
                 />
               </svg>
             </div>
-            {Array.isArray(localOrder.statusUpdates) && localOrder.statusUpdates.map((update, idx) => (
-              <div className="order-detail-drawer__status-update-row" key={idx}>
-                <span className="order-detail-drawer__status-update-date">{update.date}</span>
-                <span className="order-detail-drawer__status-update-status">{update.status}</span>
-              </div>
-            ))}
+            {statusUpdatesOpen && Array.isArray(localOrder.statusUpdates) &&
+              localOrder.statusUpdates.map((update, idx) => (
+                <div className="order-detail-drawer__status-update-row" key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+                  <span className="order-detail-drawer__status-update-status" style={{ fontWeight: 600 }}>
+                    {update.status}
+                  </span>
+                  <span className="order-detail-drawer__status-update-date" style={{ color: '#888', fontSize: 13 }}>
+                    {update.date ? new Date(update.date).toLocaleString() : ''}
+                  </span>
+                </div>
+              ))}
           </div>
         </div>
-        
-        {/* Total Bill & Actions */}
+
         <div className="order-detail-drawer__footer">
-          <div className="order-detail-drawer__total">Total bill: <span>Rs:{localOrder.total || 0}</span></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
-            {statusKey === 'pending' ? (
-              // Accept/Decline buttons
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button 
+          <div className="order-detail-drawer__total">
+            Total bill: <span>Rs:{localOrder.total || 0}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
+            {!FINAL_STATUSES.includes(statusKey) ? (
+              statusKey === "pending" ? (
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button
+                    style={{
+                      background: "",
+                      color: "rgba(229, 46, 6, 1)",
+                      fontWeight: 500,
+                      fontSize: 14,
+                      border: "2px solid rgba(229, 46, 6, 1)",
+                      borderRadius: 4,
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleDecline}
+                    disabled={!declineReason.trim() || loading}
+                  >
+                    {loading ? "Processing..." : "Decline Order"}
+                  </button>
+                  <button
+                    style={{
+                      background: "rgba(229, 46, 6, 1)",
+                      color: "white",
+                      fontWeight: 500,
+                      fontSize: 14,
+                      border: "rgba(229, 46, 6, 1)",
+                      borderRadius: 4,
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 4px rgba(67,160,71,0.2)",
+                    }}
+                    onClick={handleAccept}
+                    disabled={loading}
+                  >
+                    {loading ? "Processing..." : "Accept Order"}
+                  </button>
+                </div>
+              ) : (
+                <select
+                  value={statusKey}
+                  onChange={handleDropdownChange}
                   style={{
-                    background: '',
-                    color: 'rgba(229, 46, 6, 1)',
-                    fontWeight: 500,
+                    padding: "6px 12px",
                     fontSize: 14,
-                    border: '2px solid rgba(229, 46, 6, 1)',
                     borderRadius: 4,
-                    padding: '8px 16px',
-                    cursor: 'pointer',
+                    border: "1px solid #ccc",
+                    outline: "none",
+                    cursor: "pointer",
                   }}
-                  onClick={handleDecline}
+                  disabled={loading || getStatusOptions(statusKey).length === 0}
                 >
-                  Decline Order
-                </button>
-                <button
-                  style={{
-                    background: 'rgba(229, 46, 6, 1)',
-                    color: 'white',
-                    fontWeight: 500,
-                    fontSize: 14,
-                    border: 'rgba(229, 46, 6, 1)',
-                    borderRadius: 4,
-                    padding: '8px 16px',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 4px rgba(67,160,71,0.2)',
-                  }}
-                  onClick={handleAccept}
-                >
-                  Accept Order
-                </button>
-              </div>
-            ) : (statusKey === 'accepted' || statusKey === 'out-for-delivery') ? (
-              // Dropdown for accepted or out-for-delivery
-              <select
-                style={{ padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc', fontWeight: 500 }}
-                value={statusKey}
-                onChange={handleDropdownChange}
-              >
-                {getStatusOptions(statusKey).map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
+                  <option value={statusKey} disabled>
+                    {statusInfo.label}
+                  </option>
+                  {getStatusOptions(statusKey).map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              )
             ) : (
-              // Only status label for delivered/cancelled/failed
-              <span style={{ color: statusInfo.color, fontWeight: 600, fontSize: 16, marginLeft: 4 }}>{statusInfo.label}</span>
+              <span
+                style={{
+                  color: statusInfo.color,
+                  fontWeight: 600,
+                  fontSize: 16,
+                  marginLeft: 4,
+                }}
+              >
+                {statusInfo.label}
+              </span>
             )}
           </div>
         </div>
       </Drawer>
-      {/* Cancel Reason Modal */}
+
       <Modal
         open={cancelModalOpen}
-        onCancel={() => { setCancelModalOpen(false); setCancelReason(""); setPendingStatus(null); }}
+        onCancel={() => {
+          setCancelModalOpen(false);
+          setCancelReason("");
+          setPendingStatus(null);
+        }}
         footer={null}
         centered
         closable={false}
         width={400}
-        bodyStyle={{ borderRadius: 24, padding: 16, background: '#fff' }}
+        bodyStyle={{ borderRadius: 24, padding: 16, background: "#fff" }}
       >
-        <div style={{ fontWeight: 600, fontSize: 28, color: 'rgba(60, 66, 66, 1)', marginBottom: 24 }}>Cancel Order</div>
-        <div style={{ fontWeight: 500, fontSize: 16, color: 'rgba(0, 0, 0, 1)', marginBottom: 10 }}>Enter Reason</div>
+        <div
+          style={{
+            fontWeight: 600,
+            fontSize: 28,
+            color: "rgba(60, 66, 66, 1)",
+            marginBottom: 24,
+          }}
+        >
+          Cancel Order
+        </div>
+        <div
+          style={{
+            fontWeight: 500,
+            fontSize: 16,
+            color: "rgba(0, 0, 0, 1)",
+            marginBottom: 10,
+          }}
+        >
+          Enter Reason
+        </div>
         <textarea
           value={cancelReason}
-          onChange={e => setCancelReason(e.target.value)}
+          onChange={(e) => setCancelReason(e.target.value)}
           placeholder="Message"
           style={{
-            width: '90%',
+            width: "90%",
             minHeight: 120,
-            border: 'none',
-            background: '#F7F7F7',
+            border: "none",
+            background: "#F7F7F7",
             borderRadius: 12,
             padding: 18,
             fontSize: 16,
-            color: '#444',
+            color: "#444",
             marginBottom: 32,
-            resize: 'none',
-            outline: 'none',
+            resize: "none",
+            outline: "none",
           }}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 18 }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 18 }}>
           <button
             style={{
-              background: 'none',
-              border: 'none',
-              color: '#222',
+              background: "none",
+              border: "none",
+              color: "#222",
               fontWeight: 600,
               fontSize: 16,
-              cursor: 'pointer',
-              padding: '12px 16px 12px 16px',
+              cursor: "pointer",
+              padding: "12px 16px 12px 16px",
               borderRadius: 8,
             }}
-            onClick={() => { setCancelModalOpen(false); setCancelReason(""); setPendingStatus(null); }}
+            onClick={() => {
+              setCancelModalOpen(false);
+              setCancelReason("");
+              setPendingStatus(null);
+            }}
           >
             Cancel
           </button>
           <button
             style={{
-              background: '#E53911',
-              color: '#fff',
+              background: "#E53911",
+              color: "#fff",
               fontWeight: 500,
               fontSize: 16,
-              border: 'none',
+              border: "none",
               borderRadius: 4,
-              padding: '12px 16px 12px 16px',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(229,57,17,0.08)',
-              transition: 'background 0.2s',
+              padding: "12px 16px 12px 16px",
+              cursor: "pointer",
+              boxShadow: "0 2px 8px rgba(229,57,17,0.08)",
+              transition: "background 0.2s",
             }}
-            disabled={!cancelReason.trim()}
+            disabled={!cancelReason.trim() || loading}
             onClick={() => {
               setCancelModalOpen(false);
               setLocalDeclineReason(cancelReason);
@@ -527,10 +645,10 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
               }
             }}
           >
-            Confirm
+            {loading ? "Processing..." : "Confirm"}
           </button>
         </div>
       </Modal>
     </>
   );
-} 
+}

@@ -44,11 +44,28 @@ export default function ProductPage() {
     style: true,
   })
 
+  const [bestSellingProducts, setBestSellingProducts] = useState([]);
+
   // Fetch products and wishlist on component mount
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchWishlist());
   }, [dispatch]);
+
+  // Fetch best selling products from backend when sortBy is 'bestSelling'
+  useEffect(() => {
+    async function fetchBestSelling() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/orders/product-order-counts`, { headers });
+      const data = await res.json();
+      setBestSellingProducts(Array.isArray(data) ? data : []);
+    }
+    if (sortBy === 'bestSelling') {
+      fetchBestSelling();
+    }
+  }, [sortBy]);
 
   // Quick view handlers
   const handleQuickView = (product) => {
@@ -89,11 +106,21 @@ export default function ProductPage() {
       result.sort((a, b) => b.price - a.price);
     } else if (sortBy === "newest") {
       result.sort((a, b) => b.id - a.id);
+    } else if (sortBy === "bestSelling") {
+      // Use bestSellingProducts from backend
+      if (bestSellingProducts.length > 0) {
+        // Only show products that match current filters
+        const filteredIds = new Set(result.map(p => String(p._id || p.id)));
+        result = bestSellingProducts.filter(p => filteredIds.has(String(p._id || p.id)));
+      } else {
+        // fallback: sort by reviews if backend not loaded
+        result.sort((a, b) => b.reviews - a.reviews);
+      }
     } else {
       result.sort((a, b) => b.reviews - a.reviews);
     }
     setFilteredProducts(result);
-  }, [filters, productList, sortBy]);
+  }, [filters, productList, sortBy, bestSellingProducts]);
 
   const handlePriceChange = (value, index) => {
     const newRange = [...filters.priceRange]
@@ -357,6 +384,7 @@ export default function ProductPage() {
               {/* Sort Dropdown */}
               <div className="sort-container">
                 <select className="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <option value="all">All</option>
                   <option value="bestSelling">Best Selling</option>
                   <option value="newest">Newest</option>
                   <option value="priceLowToHigh">Price: Low to High</option>
@@ -437,7 +465,7 @@ export default function ProductPage() {
                     </div>
                     {/* Add to Cart/View Details */}
                     <div className="add-to-cart-container">
-                      <Link href={`/productdetail/${product._id}`}>
+                    <Link href={`/productdetail?id=${product.id}`} key={product.id}>
                         <button className="add-to-cart-button">View Details</button>
                       </Link>
                     </div>
