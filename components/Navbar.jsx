@@ -23,7 +23,7 @@ export default function Navbar() {
       <div className="top-bar">
         <div className="contact-info">
           <Phone className="icon-small" />
-          <span className="text-small">+92 3106900815</span>
+          <span className="text-small">+92 3212327711</span>
         </div>
         <div className="delivery">Free Delivery on order above 4000</div>
         <div className="auth-buttons">

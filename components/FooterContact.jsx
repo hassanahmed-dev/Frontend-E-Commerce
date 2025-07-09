@@ -11,7 +11,7 @@ const FooterContact = () => {
           <Phone size={32} className="footer-icon" />
           <div className="footer-text">
             <p className="footer-title">PHONE</p>
-            <p className="footer-info">+92 123 456 789</p>
+            <p className="footer-info">+92 3212327711</p>
           </div>
         </div>
 
@@ -19,7 +19,7 @@ const FooterContact = () => {
           <Mail size={32} className="footer-icon" />
           <div className="footer-text">
             <p className="footer-title">EMAIL</p>
-            <p className="footer-info">STYLEVERSE@GMAIL.COM</p>
+            <p className="footer-info">technicalhassankhan.1@gmail.com</p>
           </div>
         </div>
 
