@@ -61,7 +61,7 @@ const Banner = () => {
       alt="Woman with shopping bags"
       fill
       sizes="(max-width: 768px) 100vw, 50vw"
-      className="main-image"
+      className="main-image1"
     />
         </div>
       </div>

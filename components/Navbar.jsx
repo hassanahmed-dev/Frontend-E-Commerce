@@ -28,10 +28,10 @@ export default function Navbar() {
         <div className="delivery">Free Delivery on order above 4000</div>
         <div className="auth-buttons">
           <Link href="/signup">
-            <Button className="signup-btn">SignUp</Button>
+            <Button className="signup-btn1">SignUp</Button>
           </Link>
           <Link href="/login">
-            <Button className="login-btn">Login</Button>
+            <Button className="login-btn1">Login</Button>
           </Link>
         </div>
       </div>
@@ -48,12 +48,6 @@ export default function Navbar() {
             </Link>
             <Link href="/products" className="menu-item">
               Shop ALL
-            </Link>
-            <Link href="/products" className="menu-item">
-              Categories
-            </Link>
-            <Link href="/products" className="menu-item">
-              Best Selling
             </Link>
           </div>
           <Button className="mobile-menu-button" onClick={showDrawer}>
