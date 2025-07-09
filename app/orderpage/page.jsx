@@ -10,7 +10,6 @@ import ProtectedRoute from "../../components/ProtectedRoute"
 import "./page.scss"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchUserOrders } from "../../store/slices/orderSlice"
-import Loader from "../../components/Loader";
 
 export default function OrdersPage() {
   // State to track the active sidebar link
@@ -122,10 +121,6 @@ export default function OrdersPage() {
     if (activeTab === 'Completed') return status === 'delivered';
     return true;
   }) : [];
-
-  if (loading) {
-    return <Loader />;
-  }
 
   return (
     <ProtectedRoute>
@@ -324,13 +319,15 @@ export default function OrdersPage() {
                               <p>No products found.</p>
                             </div>
                           )}
-                          <button
-                            className="order-button-cancel-button"
-                            style={{ marginTop: '16px', width: 'fit-content' }}
-                            onClick={() => { setShowCancelModal(true); setCancellingOrderId(order._id || order.id); }}
-                          >
-                            Cancel Order
-                          </button>
+                          {activeTab === "Active" && !isCancelled && (
+                            <button
+                              className="order-button-cancel-button"
+                              style={{ marginTop: '16px', width: 'fit-content' }}
+                              onClick={() => { setShowCancelModal(true); setCancellingOrderId(order._id || order.id); }}
+                            >
+                              Cancel Order
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
