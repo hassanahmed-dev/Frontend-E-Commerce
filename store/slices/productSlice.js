@@ -77,8 +77,13 @@ export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async ({ id, productData }, { rejectWithValue }) => {
     try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
       const response = await axios.put(`${API_URL}/${id}`, productData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
       });
       return response.data;
     } catch (error) {
@@ -91,7 +96,13 @@ export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (productId, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/${productId}`);
+      const user = JSON.parse(localStorage.getItem('user'));
+      const token = user?.token;
+      await axios.delete(`${API_URL}/${productId}`, {
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
+      });
       return productId;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || 'Failed to delete product');
