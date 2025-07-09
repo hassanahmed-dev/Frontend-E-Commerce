@@ -11,6 +11,7 @@ import "./page.scss";
 import Sidebar from "../../components/Sidebar";
 import { fetchAllReviews, deleteReview } from "../../store/slices/reviewSlice";
 import ProtectedRoute from '../../components/ProtectedRoute';
+import Loader from "../../components/Loader";
 
 export default function ReviewsPage() {
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ export default function ReviewsPage() {
     const reviewsToDisplay = showAllReviews ? reviews : (reviews || []).slice(0, 8);
     
     if (reviewsLoading) {
-        return <div style={{textAlign: "center", marginTop: "2rem"}}>Loading...</div>;
+        return <Loader />;
     }
     
     if (error) {

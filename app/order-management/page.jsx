@@ -7,6 +7,7 @@ import "./page.scss";
 import Sidebar from "../../components/Sidebar";
 import OrderDetailDrawer from "../../components/OrderDetailDrawer";
 import ProtectedRoute from '../../components/ProtectedRoute';
+import Loader from "../../components/Loader";
 
 const OrdersPage = () => {
   // Dynamic orders state
@@ -162,7 +163,11 @@ const OrdersPage = () => {
     }
   };
 
-  if (loading) return <div>Loading orders...</div>;
+ 
+  if (loading) {
+    return <Loader />;
+  }
+
   if (error) return <div>Error: {error}</div>;
 
   return (

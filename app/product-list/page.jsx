@@ -10,6 +10,7 @@ import Sidebar from "../../components/Sidebar";
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from "../../store/slices/productSlice";
 import { fetchReviewsByProduct } from "../../store/slices/reviewSlice";
 import ProtectedRoute from '../../components/ProtectedRoute';
+import Loader from "../../components/Loader";
 
 export default function ProductList() {
     const dispatch = useDispatch();
@@ -120,9 +121,7 @@ export default function ProductList() {
         return (
             <div className="product-list-loading">
                 <Sidebar activePage="product-list" />
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    Loading...
-                </div>
+                <Loader />
             </div>
         );
     }

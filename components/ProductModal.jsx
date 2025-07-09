@@ -150,7 +150,7 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
 
                 <div className="form-row">
                     <div className="form-group">
-                        <label>Price per unit (Rs)Price after discount (Rs)</label>
+                        <label>Price after discount (Rs)</label>
                         <input
                             type="text"
                             name="pricePerUnit"
