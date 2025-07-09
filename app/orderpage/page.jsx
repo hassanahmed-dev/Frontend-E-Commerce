@@ -10,6 +10,7 @@ import ProtectedRoute from "../../components/ProtectedRoute"
 import "./page.scss"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchUserOrders } from "../../store/slices/orderSlice"
+import Loader from "../../components/Loader";
 
 export default function OrdersPage() {
   // State to track the active sidebar link
@@ -121,6 +122,10 @@ export default function OrdersPage() {
     if (activeTab === 'Completed') return status === 'delivered';
     return true;
   }) : [];
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <ProtectedRoute>

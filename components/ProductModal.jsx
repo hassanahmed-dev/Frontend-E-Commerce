@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Drawer, ColorPicker } from 'antd';
+import { Drawer, ColorPicker, Select } from 'antd';
 import './ProductModal.scss'; // Import the CSS for the modal
 import { AiOutlineClose, AiOutlineCloudUpload, AiOutlineDelete } from 'react-icons/ai';
 
@@ -131,24 +131,26 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                     </div>
                     <div className="form-group">
                         <label>Category</label>
-                        <select
+                        <Select
                             name="category"
                             value={formData.category || ''}
-                            onChange={handleChange}
+                            onChange={value => handleChange({ target: { name: 'category', value } })}
+                            style={{ width: '100%' }}
+                            placeholder="Category"
                         >
-                            <option value="">Category</option>
-                            <option value="Mobile Accessories">Mobile Accessories</option>
-                            <option value="Computers & Accessories">Computers & Accessories</option>
-                            <option value="TV & Home Entertainment">TV & Home Entertainment</option>
-                            <option value="Smart Watches">Smart Watches</option>
-                            <option value="Audio & Buds">Audio & Buds</option>
-                        </select>
+                            <Select.Option value="">Category</Select.Option>
+                            <Select.Option value="Mobile Accessories">Mobile Accessories</Select.Option>
+                            <Select.Option value="Computers & Accessories">Computers & Accessories</Select.Option>
+                            <Select.Option value="TV & Home Entertainment">TV & Home Entertainment</Select.Option>
+                            <Select.Option value="Smart Watches">Smart Watches</Select.Option>
+                            <Select.Option value="Audio & Buds">Audio & Buds</Select.Option>
+                        </Select>
                     </div>
                 </div>
 
                 <div className="form-row">
                     <div className="form-group">
-                        <label>Price per unit (Rs)</label>
+                        <label>Price per unit (Rs)Price after discount (Rs)</label>
                         <input
                             type="text"
                             name="pricePerUnit"
@@ -157,7 +159,7 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                         />
                     </div>
                     <div className="form-group">
-                        <label>Price after discount (Rs)</label>
+                        <label>Price per unit (Rs)</label>
                         <input
                             type="text"
                             name="priceAfterDiscount"

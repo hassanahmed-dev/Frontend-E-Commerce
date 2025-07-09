@@ -39,6 +39,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { createOrder } from "../../store/slices/orderSlice";
 import { useRouter } from "next/navigation";
+import Loader from "../../components/Loader";
 
 const { Option } = Select;
 
@@ -303,6 +304,10 @@ export default function CheckoutPage() {
         message.error("Please fill in all required fields");
       });
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (error) {
     return (

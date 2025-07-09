@@ -11,6 +11,7 @@ import Navbar from "../../components/Navbar"
 import ProtectedRoute from "../../components/ProtectedRoute"
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCart, updateCartItem, removeFromCart } from '../../store/slices/cartSlice';
+import Loader from "../../components/Loader";
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -63,6 +64,9 @@ const getColorName = (colorCode) => {
   return colorMap[colorCode] || "Unknown Color"; // Fallback if color code not found
 };
 
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <ProtectedRoute>

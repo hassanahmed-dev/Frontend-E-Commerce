@@ -1,10 +1,20 @@
-// components/Banner.jsx
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import './Banner.scss';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Banner = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleShopNow = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    router.push("/products");
+  };
+
   return (
     <section className="banner container">
       <div className="banner-left">
@@ -16,9 +26,11 @@ const Banner = () => {
         <p className="banner-description">
         Step into a world where fashion meets confidence. Explore handpicked outfits, bold styles, and timeless looks — curated just for you.
         </p>
-        <Link href="/products" className="banner-btn">
-          Shop Now
-        </Link>
+        <button className="banner-btn" onClick={handleShopNow} disabled={loading}>
+          {loading ? "Redirecting..." : "Shop Now"}
+        </button>
+
+       
 
         <div className="banner-stats">
           <div>
