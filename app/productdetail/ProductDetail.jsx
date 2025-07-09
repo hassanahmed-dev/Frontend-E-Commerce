@@ -16,6 +16,7 @@ import { fetchWishlist, addToWishlist, removeFromWishlist } from "../../store/sl
 import { fetchProductById } from "../../store/slices/productSlice";
 import { fetchReviewsByProduct, addReview } from "../../store/slices/reviewSlice";
 import axios from "axios";
+import Loader from "../../components/Loader";
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -219,11 +220,7 @@ export default function ProductDetail() {
   const isInWishlist = wishlist.products.map(String).includes(productId);
 
   if (loading) {
-    return (
-      <div className="loading-overlay">
-        <div className="loading-spinner">Loading...</div>
-      </div>
-    );
+    return <Loader />;
   }
   if (error || !product) {
     return (
