@@ -12,7 +12,7 @@ import Footer from "../components/Footer";
 import Link from 'next/link';
 import  './page.module.css';
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCart());
@@ -31,4 +31,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
