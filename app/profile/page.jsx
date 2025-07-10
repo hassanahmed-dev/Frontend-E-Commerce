@@ -313,7 +313,7 @@ export default function ProfilePage() {
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       dispatch(logout());
-      router.push("/login");
+      router.push('/');
     } else {
       setActiveLink(linkName);
     }
@@ -386,7 +386,7 @@ export default function ProfilePage() {
                 </li>
                 <li className="nav-item2">
                   <Link
-                    href="#"
+                    href="/"
                     className={`nav-link2 ${activeLink === "Sign out" ? "active" : ""}`}
                     onClick={() => handleLinkClick("Sign out")}
                   >

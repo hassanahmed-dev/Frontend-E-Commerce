@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { Modal } from "antd";
 import Zoom from "react-medium-image-zoom";
 import 'react-medium-image-zoom/dist/styles.css';
+import { useRouter } from "next/navigation";
 
 export default function WishlistPage() {
   // State to track the active sidebar link
@@ -31,6 +32,7 @@ export default function WishlistPage() {
   const productsLoading = useSelector(state => state.products.loading);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchWishlist());
@@ -53,8 +55,15 @@ export default function WishlistPage() {
 
   // Function to handle link click and update active state
   const handleLinkClick = (linkName) => {
-    setActiveLink(linkName)
-  }
+    if (linkName === "Sign out") {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+
+      router.push('/');
+    } else {
+      setActiveLink(linkName);
+    }
+  };
 
   const handleQuickView = (product) => {
     setSelectedProduct(product);
@@ -133,7 +142,7 @@ export default function WishlistPage() {
                 
                 <li className="nav-item2">
                   <Link
-                    href="#"
+                    href="/"
                     className={`nav-link2 ${activeLink === "Sign out" ? "active" : ""}`}
                     onClick={() => handleLinkClick("Sign out")}
                   >

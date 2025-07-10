@@ -11,6 +11,7 @@ import "./page.scss"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchUserOrders } from "../../store/slices/orderSlice"
 import { message as antdMessage } from "antd";
+import { useRouter } from "next/navigation";
 
 export default function OrdersPage() {
   // State to track the active sidebar link
@@ -33,6 +34,7 @@ export default function OrdersPage() {
   const { token } = useSelector((state) => state.auth);
   const user = useSelector((state) => state.auth.user);
   const userName = user?.firstName || user?.name || "User";
+  const router = useRouter();
 
   useEffect(() => {
     if (token) {
@@ -89,8 +91,16 @@ export default function OrdersPage() {
 
   // Function to handle link click and update active state
   const handleLinkClick = (linkName) => {
-    setActiveLink(linkName)
-  }
+    if (linkName === "Sign out") {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      // If you have a logout action, dispatch it here
+      // dispatch(logout());
+      router.push('/');
+    } else {
+      setActiveLink(linkName);
+    }
+  };
 
   // Function to cancel an order
   const cancelOrder = (id) => {
@@ -192,7 +202,7 @@ export default function OrdersPage() {
                 
                 <li className="nav-item2">
                   <Link
-                    href="#"
+                    href="/"
                     className={`nav-link2 ${activeLink === "Sign out" ? "active" : ""}`}
                     onClick={() => handleLinkClick("Sign out")}
                   >

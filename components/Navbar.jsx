@@ -18,6 +18,7 @@ export default function Navbar() {
   const router = useRouter();
   const { items: searchResults, loading } = useSelector((state) => state.products);
   const itemCount = useSelector((state) => state.cart.itemCount);
+  const user = useSelector((state) => state.auth.user);
   let debounceTimeout = null;
 
   // Debounced search
@@ -83,12 +84,16 @@ export default function Navbar() {
         </div>
         <div className="delivery">Free Delivery on order above 4000</div>
         <div className="auth-buttons">
-          <Link href="/signup">
-            <Button className="signup-btn">SignUp</Button>
-          </Link>
-          <Link href="/login">
-            <Button className="login-btn">Login</Button>
-          </Link>
+          {!user && (
+            <>
+              <Link href="/signup">
+                <Button className="signup-btn">SignUp</Button>
+              </Link>
+              <Link href="/login">
+                <Button className="login-btn">Login</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
