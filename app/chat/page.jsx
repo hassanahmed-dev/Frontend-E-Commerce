@@ -5,8 +5,12 @@ import "./page.scss"
 import Navbar from "../../components/Navbar"
 import FooterContact from "../../components/FooterContact"
 import Footer from "../../components/Footer"
+import { useDispatch } from 'react-redux';
+
 
 export default function CheckoutPage() {
+  const dispatch = useDispatch();
+
   return (
     <>
       <Navbar />

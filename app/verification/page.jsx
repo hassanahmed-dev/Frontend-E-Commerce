@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Form, Input, Button, message } from "antd"
+import { Form, Input, Button, message as antdMessage } from "antd"
 import Image from "next/image"
 import { useDispatch } from 'react-redux'
 import { verifyEmail } from "../../store/slices/authSlice"
@@ -12,6 +12,9 @@ export default function VerificationPage() {
   const [loading, setLoading] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
   const dispatch = useDispatch();
+
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -30,10 +33,12 @@ export default function VerificationPage() {
       setLoading(true)
       await dispatch(verifyEmail(token)).unwrap()
       setStatusMessage('Email verified successfully! You can now log in.')
+      messageApi.success('Email verified successfully! You can now log in.')
       setTimeout(() => window.location.href = '/login', 2000)
     } catch (error) {
       console.error('Verification error:', error)
       setStatusMessage(error.message || 'Verification failed')
+      messageApi.error(error.message || 'Verification failed')
     } finally {
       setLoading(false)
     }
@@ -45,6 +50,7 @@ export default function VerificationPage() {
 
   return (
     <div className="verify-container">
+      {contextHolder}
       <div className="image-section">
         <Image
           src="/verify.png"

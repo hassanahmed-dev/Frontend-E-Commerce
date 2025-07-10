@@ -73,8 +73,8 @@ h1 {
   text-decoration: underline;
 }
 
-.signin-button {
-  width: 30%;
+.login-button {
+  width: 30% !important;
   height: 44px;
   background-color: #e63b19;
   border-color: #e63b19;
@@ -85,9 +85,9 @@ h1 {
   font-family: 'Poppins';
 }
 
-.signin-button:hover,
-.signin-button:focus {
-  background-color: #d63515;
+.login-button:hover,
+.login-button:focus {
+  background-color: #d63515 !important;
   border-color: #d63515;
 }
 
@@ -115,4 +115,18 @@ h1 {
   }
 }
 
+input[type="password"] {
+  height: 42px;           /* ya jitni aapke design me ho */
+  padding: 0 12px;
+  line-height: 48px;      /* height ke barabar */
+  box-sizing: border-box;
+  vertical-align: middle;
+  font-size: 16px;
+}
 
+/* Agar Ant Design ka Input.Password use ho raha hai */
+.ant-input-affix-wrapper {
+  height: 42px !important;
+  align-items: center !important;
+  font-size: 16px;
+}

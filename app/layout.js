@@ -1,9 +1,12 @@
-// app/layout.js
+// app/layout.js or layout.tsx
+
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import 'antd/dist/reset.css';
+import { ConfigProvider } from "antd";
 
-// Load Poppins font
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -19,7 +22,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={poppins.variable}>
-        <Providers>{children}</Providers>
+        <ConfigProvider>
+          <Providers>{children}</Providers>
+        </ConfigProvider>
       </body>
     </html>
   );

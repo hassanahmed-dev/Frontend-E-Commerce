@@ -15,9 +15,10 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import Loader from "../../components/Loader";
 
 // Edit Name Modal Component
-function EditNameModal({ isOpen, onClose, currentName, onSave, loading }) {
+function EditNameModal({ isOpen, onClose, currentName, onSave }) {
   const [firstName, setFirstName] = useState(currentName.split(" ")[0] || "");
   const [lastName, setLastName] = useState(currentName.split(" ")[1] || "");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFirstName(currentName.split(" ")[0] || "");
@@ -26,12 +27,13 @@ function EditNameModal({ isOpen, onClose, currentName, onSave, loading }) {
 
   if (!isOpen) return null;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
       message.error("First and last name are required");
       return;
     }
-    onSave(firstName, lastName);
+    setLoading(true);
+    await onSave(firstName, lastName, setLoading);
   };
 
   return (
@@ -62,7 +64,7 @@ function EditNameModal({ isOpen, onClose, currentName, onSave, loading }) {
         </div>
         <div className="modal-actions2">
           <button className="button cancel-button2" onClick={onClose} disabled={loading}>
-            Cancel
+            {loading ? <Spin size="small" /> : "Cancel"}
           </button>
           <button className="button save-button2" onClick={handleSave} disabled={loading}>
             {loading ? <Spin size="small" /> : "Save"}
@@ -74,20 +76,22 @@ function EditNameModal({ isOpen, onClose, currentName, onSave, loading }) {
 }
 
 // Edit Phone Modal Component
-function EditPhoneModal({ isOpen, onClose, currentPhone, onSave, loading }) {
+function EditPhoneModal({ isOpen, onClose, currentPhone, onSave }) {
   const [phone, setPhone] = useState(currentPhone);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setPhone(currentPhone);
   }, [currentPhone]);
   if (!isOpen) return null;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const phoneRegex = /^[0-9]{10,15}$/;
     if (!phoneRegex.test(phone)) {
       message.error("Please enter a valid phone number (10-15 digits)");
       return;
     }
-    onSave(phone);
+    setLoading(true);
+    await onSave(phone, setLoading);
   };
 
   return (
@@ -119,13 +123,14 @@ function EditPhoneModal({ isOpen, onClose, currentPhone, onSave, loading }) {
 }
 
 // Change Password Modal Component
-function ChangePasswordModal({ isOpen, onClose, onSave, loading }) {
+function ChangePasswordModal({ isOpen, onClose, onSave }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setCurrentPassword("");
@@ -135,7 +140,7 @@ function ChangePasswordModal({ isOpen, onClose, onSave, loading }) {
 
   if (!isOpen) return null;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       message.error("All password fields are required");
       return;
@@ -148,7 +153,8 @@ function ChangePasswordModal({ isOpen, onClose, onSave, loading }) {
       message.error("New password must be at least 6 characters long");
       return;
     }
-    onSave(currentPassword, newPassword);
+    setLoading(true);
+    await onSave(currentPassword, newPassword, setLoading);
   };
 
   return (
@@ -222,10 +228,14 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
   const { user, loading, error, message: successMessage } = useSelector((state) => state.auth);
 
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = message.useMessage();
+
   useEffect(() => {
     const userFromStorage = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : null;
     if (userFromStorage?.userId && userFromStorage?.token) {
       dispatch(getProfile({ id: userFromStorage.userId, token: userFromStorage.token }));
+      
     } else {
       router.push("/login");
     }
@@ -249,47 +259,53 @@ export default function ProfilePage() {
     dispatch(clearMessage());
   };
 
-  const handleNameSave = async (firstName, lastName) => {
+  const handleNameSave = async (firstName, lastName, setLoading) => {
     if (!user?.userId || !user?.token) {
-      message.error("User not authenticated");
+      messageApi.error("User not authenticated");
+      setLoading(false);
       return;
     }
     const name = `${firstName} ${lastName}`.trim();
     try {
       await dispatch(updateProfile({ id: user.userId, name, phone: user.phone, token: user.token })).unwrap();
-      message.success("Name updated successfully!");
+      messageApi.success("Name updated successfully!");
       closeModal("editName");
     } catch (err) {
-      message.error(err || "Failed to update name");
+      messageApi.error(err || "Failed to update name");
     }
+    setLoading(false);
   };
 
-  const handlePhoneSave = async (phone) => {
+  const handlePhoneSave = async (phone, setLoading) => {
     if (!user?.userId || !user?.token) {
-      message.error("User not authenticated");
+      messageApi.error("User not authenticated");
+      setLoading(false);
       return;
     }
     try {
       await dispatch(updateProfile({ id: user.userId, phone, name: user.name, token: user.token })).unwrap();
-      message.success("Phone updated successfully!");
+      messageApi.success("Phone updated successfully!");
       closeModal("editPhone");
     } catch (err) {
-      message.error(err || "Failed to update phone");
+      messageApi.error(err || "Failed to update phone");
     }
+    setLoading(false);
   };
 
-  const handlePasswordSave = async (currentPassword, newPassword) => {
+  const handlePasswordSave = async (currentPassword, newPassword, setLoading) => {
     if (!user?.userId || !user?.token) {
-      message.error("User not authenticated");
+      messageApi.error("User not authenticated");
+      setLoading(false);
       return;
     }
     try {
       await dispatch(changePassword({ id: user.userId, currentPassword, newPassword, token: user.token })).unwrap();
-      message.success("Password updated successfully!");
+      messageApi.success("Password updated successfully!");
       closeModal("changePassword");
     } catch (err) {
-      message.error(err || "Failed to update password");
+      messageApi.error(err || "Failed to update password");
     }
+    setLoading(false);
   };
 
   const handleLinkClick = (linkName) => {
@@ -303,9 +319,6 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) {
-    return <Loader />;
-  }
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -313,6 +326,7 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <>
+        {contextHolder}
         <Navbar />
         <div className="container2">
           {/* Sidebar */}
@@ -437,7 +451,6 @@ export default function ProfilePage() {
               onClose={() => closeModal("editName")}
               currentName={user?.name || ''}
               onSave={handleNameSave}
-              loading={loading}
             />
           )}
 
@@ -447,7 +460,6 @@ export default function ProfilePage() {
               onClose={() => closeModal("editPhone")}
               currentPhone={user?.phone || ''}
               onSave={handlePhoneSave}
-              loading={loading}
             />
           )}
 
@@ -456,7 +468,6 @@ export default function ProfilePage() {
               isOpen={modals.changePassword}
               onClose={() => closeModal("changePassword")}
               onSave={handlePasswordSave}
-              loading={loading}
             />
           )}
         </div>

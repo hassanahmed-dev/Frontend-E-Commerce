@@ -201,11 +201,11 @@ export default function WishlistPage() {
                             onError={e => { e.target.src = "/placeholder.png"; }}
                         />
                       </div>
-                      {/* <div className="add-to-cart-container">
+                      <div className="add-to-cart-container">
                         <Link href={`/productdetail?id=${product.id || product._id}`}>
                           <button className="add-to-cart-button">View Details</button>
                         </Link>
-                      </div> */}
+                      </div>
                       <h4 className="product-title">{product.title || product.name || product.productName}</h4>
                     <div className="product-details">
                       <div className="price-container">

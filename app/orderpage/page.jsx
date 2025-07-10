@@ -10,6 +10,7 @@ import ProtectedRoute from "../../components/ProtectedRoute"
 import "./page.scss"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchUserOrders } from "../../store/slices/orderSlice"
+import { message as antdMessage } from "antd";
 
 export default function OrdersPage() {
   // State to track the active sidebar link
@@ -23,6 +24,9 @@ export default function OrdersPage() {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [cancellingOrderId, setCancellingOrderId] = useState(null);
+
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
 
   const dispatch = useDispatch();
   const { orders, loading, error } = useSelector((state) => state.order);
@@ -93,6 +97,7 @@ export default function OrdersPage() {
     setOrders(orders.map(order =>
       order.id === id ? { ...order, status: "Cancelled", cancellationReason: "Order cancelled by user", cancellable: false } : order
     ));
+    messageApi.success('Order cancelled!');
   }
 
   // Function to toggle expanded order
@@ -125,6 +130,7 @@ export default function OrdersPage() {
   return (
     <ProtectedRoute>
       <>
+        {contextHolder}
         <Navbar />
         <div className="container2">
           {/* Sidebar */}
@@ -235,7 +241,7 @@ export default function OrdersPage() {
                   const statusInfo = statusMap[statusKey] || { label: statusKey, color: '#888' };
                   const isCancelled = statusKey === 'cancelled' || statusKey === 'failed';
                   return (
-                    <div key={order._id || order.id} className="order-item">
+                    <div key={order._id || order.id} className="order-item-orderpage">
                       {/* Cancelled Alert UI (only once per order) */}
                      
                       <div className="order-header">
@@ -369,10 +375,13 @@ export default function OrdersPage() {
                     if (!cancellingOrderId) return;
                     try {
                       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-                      await fetch(`${backendUrl}/api/orders/${cancellingOrderId}/status`, {
+                      await fetch(`${backendUrl}/api/orders/${cancellingOrderId}/cancel`, {
                         method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ status: 'cancelled', reason: cancelReason, cancelledBy: 'user' }),
+                        headers: { 
+                          'Content-Type': 'application/json',
+                          'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ reason: cancelReason }),
                       });
                       setShowCancelModal(false);
                       setCancelReason("");

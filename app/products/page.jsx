@@ -16,6 +16,8 @@ import { fetchProducts } from '../../store/slices/productSlice';
 import { fetchWishlist, addToWishlist, removeFromWishlist } from '../../store/slices/wishlistSlice';
 import "../../components/Product.scss"
 import { Heart, Eye } from "lucide-react"
+import { fetchCart } from '../../store/slices/cartSlice';
+
 
 export default function ProductPage() {
   const dispatch = useDispatch();
@@ -48,8 +50,9 @@ export default function ProductPage() {
 
   // Fetch products and wishlist on component mount
   useEffect(() => {
-    dispatch(fetchProducts());
+   
     dispatch(fetchWishlist());
+    dispatch(fetchCart());
   }, [dispatch]);
 
   // Fetch best selling products from backend when sortBy is 'bestSelling'
@@ -375,7 +378,7 @@ export default function ProductPage() {
             {/* Header */}
             <div className="product-header">
               <div>
-                <h1 className="product-title">All Products</h1>
+                <h1 className="product-title-product-page-all">All Products</h1>
                 <p className="product-count">
                   Showing 1-{filteredProducts.length} of {productList ? productList.length : 0} products
                 </p>

@@ -232,8 +232,8 @@
 }
 
 .input2 {
-  width: 100%; /* Changed to 100% with max-width to control size */
-  max-width: 300px; /* Added max-width to limit input size */
+  width: 350px; /* Changed to 100% with max-width to control size */
+  // max-width: 0px; /* Added max-width to limit input size */
   padding: 8px 12px; /* Reduced padding for smaller appearance */
   border: 1px solid #ced4da;
   border-radius: 4px;
@@ -266,8 +266,7 @@
 }
 
 .phone-input2 {
-  flex: 1;
-  max-width: 200px; /* Limit phone input width */
+ width: 350px; /* Limit phone input width */
 }
 
 .password-group2 {
@@ -275,7 +274,8 @@
 }
 
 .password-input2 {
-  padding-right: 40px;
+  width: 350px;
+  // padding-right: 40px;
   background: #e9ecef;
 }
 
@@ -299,8 +299,8 @@
 }
 
 .button {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 10px 30px;
+  border-radius: 2px;
   font-size: 14px;
   font-weight: 500;
   font-family: 'Poppins';
@@ -319,12 +319,12 @@
 }
 
 .save-button2 {
-  background: #dc3545;
+  background:  rgba(229, 46, 6, 1);
   color: white;
 }
 
 .save-button2:hover {
-  background: #c82333;
+  background:rgb(244, 62, 21) ;
 }
 
 .send-code-button2 {

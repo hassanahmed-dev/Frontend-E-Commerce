@@ -199,7 +199,7 @@
   gap: 20px;
 }
 
-.order-item {
+.order-item-orderpage {
   background: #f8f9fa;
   border: 1px solid #eee;
   border-radius: 8px;
@@ -387,17 +387,17 @@
 
 .modal-content h3 {
   margin: 0 0 8px 0;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 500;
   color: rgba(60, 66, 66, 1);
   letter-spacing: -1px;
 }
 
 .modal-content label {
-  font-size: 20px;
+  font-size: 18px;
   color: #222;
   margin-bottom: 4px;
-  font-weight: 600;
+  font-weight: 500;
   align-self: flex-start;
 }
 
@@ -407,8 +407,8 @@
   border-radius: 14px;
   font-size: 20px;
   padding: 25px;
-  width: 90%;
-  min-height: 140px;
+  width: 100%;
+  min-height: 100px;
   margin: 0 auto 0 auto;
   display: block;
   font-family: inherit;
@@ -419,7 +419,7 @@
 
 .modal-content textarea::placeholder {
   color: #bdbdbd;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .modal-content .modal-actions {
@@ -450,10 +450,10 @@
   background: #e52e06;
   color: #fff;
   border: none;
-  border-radius: 7px;
-  padding: 10px 32px;
-  font-size: 22px;
-  font-weight: 600;
+  border-radius: 2px;
+  padding: 10px 22px;
+  font-size: 18px;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -583,7 +583,7 @@
   .orders-list {
     gap: 8px;
   }
-  .order-item {
+  .order-item-orderpage {
     padding: 10px 8px;
     border-radius: 10px;
     gap: 8px;

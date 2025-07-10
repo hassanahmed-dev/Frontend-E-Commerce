@@ -11,7 +11,7 @@ import {
   Row,
   Col,
   Spin,
-  message,
+  message as antdMessage,
 } from "antd";
 import { ChevronRight, Eye, EyeOff } from "lucide-react";
 import {
@@ -40,6 +40,10 @@ import {
 import { createOrder } from "../../store/slices/orderSlice";
 import { useRouter } from "next/navigation";
 import Loader from "../../components/Loader";
+import React from "react";
+
+// import { fetchCart } from '../store/slices/cartSlice';
+
 
 const { Option } = Select;
 
@@ -62,7 +66,8 @@ const StripeCheckoutForm = forwardRef(function StripeCheckoutForm(
   const createPaymentIntent = async (amount, values) => {
     // Send PKR amount and currency to backend for real-time conversion
     const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_URL + "/api/payment/create-payment-intent",
+      process.env.NEXT_PUBLIC_BACKEND_URL +
+        "/api/payment/create-payment-intent",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,9 +95,9 @@ const StripeCheckoutForm = forwardRef(function StripeCheckoutForm(
         },
       });
       if (result.error) {
-        message.error(result.error.message);
+        antdMessage.error(result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
-        message.success("Payment successful!");
+        antdMessage.success("Payment successful!");
         const orderData = buildOrderData(
           values,
           "credit-card",
@@ -104,7 +109,7 @@ const StripeCheckoutForm = forwardRef(function StripeCheckoutForm(
         router.push("/chat");
       }
     } catch (err) {
-      message.error(err.message || "Payment failed");
+      antdMessage.error(err.message || "Payment failed");
     } finally {
       setLoading(false);
     }
@@ -122,7 +127,7 @@ const StripeCheckoutForm = forwardRef(function StripeCheckoutForm(
         color: "#333",
         fontFamily: "inherit",
         "::placeholder": { color: "#aaa" },
-        backgroundColor: "#fafafa"
+        backgroundColor: "#fafafa",
       },
       invalid: { color: "#e5424d" },
     },
@@ -202,6 +207,10 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const stripeFormRef = useRef();
   const router = useRouter();
+  const [placeOrderLoading, setPlaceOrderLoading] = useState(false);
+
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
 
   // Fetch cart data on component mount
   useEffect(() => {
@@ -213,9 +222,9 @@ export default function CheckoutPage() {
   // Show error message if cart fetch fails
   useEffect(() => {
     if (error) {
-      message.error(error);
+      messageApi.error(error);
     }
-  }, [error]);
+  }, [error, messageApi]);
 
   const handleRadioChange = (e) => {
     setAddressType(e.target.value);
@@ -267,19 +276,22 @@ export default function CheckoutPage() {
 
   // Place Order button handler
   const handlePlaceOrder = () => {
+    setPlaceOrderLoading(true);
     form
       .validateFields()
       .then(async (values) => {
-        debugger
+        debugger;
         if (paymentMethod === "credit-card") {
           // Trigger Stripe payment flow
           if (
             stripeFormRef.current &&
             stripeFormRef.current.handleStripeSubmit
           ) {
-            await stripeFormRef.current.handleStripeSubmit();
+            await stripeFormRef.current.handleStripeSubmit(messageApi);
+            setPlaceOrderLoading(false);
           } else {
-            message.error("Stripe form not ready");
+            messageApi.error("Stripe form not ready");
+            setPlaceOrderLoading(false);
           }
         } else if (paymentMethod === "cash-on-delivery") {
           // Save order directly for COD
@@ -293,15 +305,18 @@ export default function CheckoutPage() {
             // Push order to chat (using localStorage for demo)
             localStorage.setItem("lastOrder", JSON.stringify(orderData));
             dispatch(clearCart());
-            message.success("Order placed successfully!");
+            messageApi.success("Order placed successfully!");
             router.push("/chat");
           }
+          setPlaceOrderLoading(false);
         } else {
-          message.error("Please select a payment method");
+          messageApi.error("Please select a payment method");
+          setPlaceOrderLoading(false);
         }
       })
       .catch(() => {
-        message.error("Please fill in all required fields");
+        messageApi.error("Please fill in all required fields");
+        setPlaceOrderLoading(false);
       });
   };
 
@@ -348,7 +363,8 @@ export default function CheckoutPage() {
   return (
     <ProtectedRoute>
       <Elements stripe={stripePromise}>
-        <>
+        <React.Fragment>
+          {contextHolder}
           <Navbar />
           <div className="checkout-container">
             <div className="breadcrumb">
@@ -578,23 +594,27 @@ export default function CheckoutPage() {
                     className="place-order-button"
                     onClick={handlePlaceOrder}
                     type="button"
+                    disabled={placeOrderLoading}
                   >
-                    {" "}
-                    Place an order &rarr;
+                    {placeOrderLoading
+                      ? <Spin size="small" />
+                      : <>Place an order &rarr;</>
+                    }
                   </button>
                 </div>
               </div>
 
               <div className="section-divider"></div>
 
+              <div className="main-width">
+
               <div className="shipping-container">
                 <h1 className="shipping-title">Shipping Address</h1>
                 <p className="shipping-subtitle">
                   Select the address that matches your card or payment method.
                 </p>
-
                 <div className="radio-container">
-                  <Form.Item name="addressType" initialValue="same">
+                  <Form.Item name="addressType" initialValue="same" className="bottom-khattam">
                     <Radio.Group
                       onChange={handleRadioChange}
                       value={addressType}
@@ -702,25 +722,27 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              <div className="section-divider"></div>
+              <div className="section-divider1"></div>
 
               <div className="shipping-container2">
                 <h3>Shipping Method</h3>
                 <div className="shipping-box2">
                   <div className="shipping-header2">
                     <span className="delivery-date">
-                      Arrives by Monday, June 7
+                    "Delivery will be made within 4 working days after placing the order"
                     </span>
                   </div>
 
                   <hr />
                   <div className="shipping-details2">
                     <div className="charge-label">Delivery Charges</div>
-                    <div className="charge-price">Rs:5.00</div>
+                    <div className="charge-price">Rs:210.00</div>
                   </div>
                   <p className="note2">Additional fees may apply</p>
                 </div>
               </div>
+
+              <div className="section-divider1"></div>
 
               <div className="payment-container">
                 <div className="payment-inner">
@@ -780,11 +802,13 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
+
+              </div>
             </Form>
           </div>
           <FooterContact />
           <Footer />
-        </>
+        </React.Fragment>
       </Elements>
     </ProtectedRoute>
   );

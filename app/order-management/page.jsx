@@ -222,7 +222,7 @@ const OrdersPage = () => {
                     </button>
                   </div>
                   <div className="search-box">
-                    <input type="text" placeholder="input search text" className="search-input" />
+                    <input type="text" placeholder="input search text" className="search-input1" />
                     <AiOutlineSearch className="search-icon" />
                   </div>
                 </div>

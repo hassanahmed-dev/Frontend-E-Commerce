@@ -11,6 +11,11 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'res.cloudinary.com'], // 👈 Cloudinary added here
   },
+
+  
+    transpilePackages: ['antd'],
+  
+
 };
 
 export default nextConfig;

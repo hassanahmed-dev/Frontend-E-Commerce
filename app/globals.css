@@ -8,4 +8,6 @@
   body {
     font-family: var(--font-poppins); /* use it globally */
   }
+
+  @import '~antd/dist/reset.css';
   

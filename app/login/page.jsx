@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Form, Input, Button, message } from "antd"
+import { Form, Input, Button, message as antdMessage } from "antd"
 import Link from "next/link"
 import Image from "next/image"
 import { Eye, EyeOff } from "lucide-react"
@@ -17,22 +17,33 @@ export default function LoginPage() {
   const [form] = Form.useForm()
   const [showPassword, setShowPassword] = useState(false)
 
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
+
   // Show error/success messages
   useEffect(() => {
-    if (error) {
-      message.error(error)
-      dispatch(clearError())
-    }
     if (authMessage) {
-      message.success(authMessage)
+      messageApi.success(authMessage)
       dispatch(clearMessage())
     }
-  }, [error, authMessage, dispatch])
+  }, [authMessage, dispatch, messageApi])
+
+  useEffect(() => {
+    if (error) {
+      messageApi.error(error)
+      dispatch(clearError())
+    }
+  }, [error, dispatch, messageApi])
 
   const onFinish = async (values) => {
     try {
-      await dispatch(signin(values)).unwrap()
-      router.push('/')
+      const resultAction = await dispatch(signin(values)).unwrap();
+      const userRole = resultAction?.role;
+      if (userRole === "admin") {
+        router.push('/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (err) {
       // Error is handled by Redux and shown above
     }
@@ -44,6 +55,7 @@ export default function LoginPage() {
 
   return (
     <div className="signin-container">
+      {contextHolder}
       <div className="image-section">
         <Image
           src="/Login.png"
@@ -87,8 +99,18 @@ export default function LoginPage() {
               <Input.Password />
             </Form.Item>
 
+            {error && (
+            <div style={{ color: 'red', marginBottom: 16,  }}>
+              {error}
+            </div>
+          )}
+          
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="signin-button">
+              <Button type="primary" 
+              htmlType="submit" 
+              className="login-button"
+              loading={loading}
+              block>
                 Login
               </Button>
             </Form.Item>

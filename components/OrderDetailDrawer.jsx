@@ -95,6 +95,16 @@ function getToken() {
   return null;
 }
 
+// Update isOrderCancelled to check statusUpdates if orderStatus/status is missing
+const isOrderCancelled = (order) => {
+  let status = (order?.orderStatus || order?.status || '').toLowerCase();
+  if (!status && Array.isArray(order?.statusUpdates) && order.statusUpdates.length > 0) {
+    // Get the latest status from statusUpdates
+    status = order.statusUpdates[order.statusUpdates.length - 1].status?.toLowerCase() || '';
+  }
+  return status === 'cancelled' || status === 'declined' || status === 'failed';
+};
+
 export default function OrderDetailDrawer({ open, onClose, order, onStatusChange }) {
   const dispatch = useDispatch();
   const { loading, error, success } = useSelector((state) => state.order);
@@ -137,6 +147,10 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
+
+  useEffect(() => {
+    console.log("Order Drawer Data:", localOrder);
+  }, [localOrder]);
 
   if (!open) return null;
   if (!localOrder) return null;
@@ -230,8 +244,7 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
           </button>
         </div>
 
-        {/* Cancelled Order Reason Display */}
-        {statusKey === "cancelled" && (
+        {isOrderCancelled(localOrder) && (
           <div style={{
             background: '#fff6f6',
             borderRadius: 6,
@@ -247,7 +260,7 @@ export default function OrderDetailDrawer({ open, onClose, order, onStatusChange
             </span>
             <div>
               <div style={{ fontWeight: 700, color: '#222', fontSize: 16, marginBottom: 2 }}>
-                Order cancelled by {localOrder.cancelledBy === 'user' ? 'You' : 'Admin'}
+                Order cancelled by {localOrder.cancelledBy || 'Unknown'}
               </div>
               <div style={{ fontWeight: 500, color: '#222', fontSize: 15 }}>
                 <span style={{ fontWeight: 600 }}>Reason:</span> {localOrder.cancellationReason || 'No reason provided.'}

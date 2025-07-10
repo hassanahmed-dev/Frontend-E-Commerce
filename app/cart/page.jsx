@@ -2,7 +2,8 @@
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Input, Button, message } from "antd"
+import { Input, Button, message as antdMessage } from "antd"
+import { Spin } from "antd"
 import { ChevronRight, Trash2, Tag, ArrowRight, Minus, Plus } from "lucide-react"
 import "./page.scss"
 import FooterContact from "../../components/FooterContact"
@@ -11,11 +12,17 @@ import Navbar from "../../components/Navbar"
 import ProtectedRoute from "../../components/ProtectedRoute"
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCart, updateCartItem, removeFromCart } from '../../store/slices/cartSlice';
-import Loader from "../../components/Loader";
+import { useRouter } from "next/navigation"
+// import Loader from "../../components/Loader";
 
 export default function CartPage() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { items: cartItems, total, discount, shipping, finalTotal, loading, error } = useSelector(state => state.cart);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
 
   // Fetch cart items from Redux store
   useEffect(() => {
@@ -25,9 +32,9 @@ export default function CartPage() {
   // Show error message if cart fetch fails
   useEffect(() => {
     if (error) {
-      message.error(error);
+      messageApi.error(error);
     }
-  }, [error]);
+  }, [error, messageApi]);
 
   // Handle quantity change (sync with backend)
   const updateQuantity = useCallback(async (item, newQuantity) => {
@@ -40,9 +47,9 @@ export default function CartPage() {
         quantity: newQuantity 
       })).unwrap();
     } catch (err) {
-      message.error(err || "Failed to update quantity");
+      messageApi.error(err || "Failed to update quantity");
     }
-  }, [dispatch])
+  }, [dispatch, messageApi])
 
   // Handle item removal (sync with backend)
   const removeItem = useCallback(async (item) => {
@@ -52,10 +59,11 @@ export default function CartPage() {
         size: item.size, 
         color: item.color 
       })).unwrap();
+      messageApi.success("Removed from cart");
     } catch (err) {
-      message.error(err || "Failed to remove item");
+      messageApi.error(err || "Failed to remove item");
     }
-  }, [dispatch])
+  }, [dispatch, messageApi])
 
   // Define a color code to name mapping (you can expand this or fetch from DB)
 
@@ -64,13 +72,14 @@ const getColorName = (colorCode) => {
   return colorMap[colorCode] || "Unknown Color"; // Fallback if color code not found
 };
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   return (
     <ProtectedRoute>
       <>
+        {contextHolder}
         <Navbar />
         <div className="cart-container">
           <div className="breadcrumb">
@@ -178,9 +187,16 @@ const getColorName = (colorCode) => {
                 <span>Total</span>
                 <span>Rs.{finalTotal}</span>
               </div>
-              <Link href="/checkout">
-                <button className="checkout-button">Go to checkout <ArrowRight size={18} /></button>
-              </Link>
+              <button
+                className="checkout-button"
+                onClick={async () => {
+                  setCheckoutLoading(true);
+                  router.push("/checkout");
+                }}
+                disabled={checkoutLoading}
+              >
+                {checkoutLoading ? <Spin size="small" /> : <>Go to checkout <ArrowRight size={18} /></>}
+              </button>
             </div>
           </div>
         </div>

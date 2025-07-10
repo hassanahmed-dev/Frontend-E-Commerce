@@ -135,7 +135,7 @@ h1 {
 }
 
 .signup-button-signup {
-  width: 30%;
+  width: 30% !important;
   height: 44px;
   background-color: #e63b19;
   border-color: #e63b19;
@@ -147,7 +147,7 @@ h1 {
 }
 
 .signup-button-signup:hover {
-  background-color: #d63515;
+  background-color: #d63515 !important;
   border-color: #d63515;
 }
 
@@ -173,4 +173,21 @@ h1 {
   .image-section {
     display: block;
   }
+}
+
+/* Agar aap custom input use kar rahe hain */
+input[type="password"] {
+  height: 42px;           /* ya jitni aapke design me ho */
+  padding: 0 12px;
+  line-height: 48px;      /* height ke barabar */
+  box-sizing: border-box;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+/* Agar Ant Design ka Input.Password use ho raha hai */
+.ant-input-affix-wrapper {
+  height: 42px !important;
+  align-items: center !important;
+  font-size: 16px;
 }

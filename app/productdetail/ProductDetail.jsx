@@ -17,6 +17,8 @@ import { fetchProductById } from "../../store/slices/productSlice";
 import { fetchReviewsByProduct, addReview } from "../../store/slices/reviewSlice";
 import axios from "axios";
 import Loader from "../../components/Loader";
+import { fetchCart } from '../../store/slices/cartSlice';
+import { message as antdMessage } from "antd";
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -45,11 +47,18 @@ export default function ProductDetail() {
   const [formData, setFormData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+  const [messageApi, contextHolder] = antdMessage.useMessage();
+
   // Check if user is logged in
   const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user")) : null;
   const isLoggedIn = !!user && !!user.token;
 
   useEffect(() => {
+    setAddCartError("");
+    setAddCartSuccess("");
+    setQuantity(1);
+    setSelectedColor(null);
+    setSelectedSize(null);
     const fetchDetails = async () => {
       if (!id) {
         setLoading(false);
@@ -64,6 +73,7 @@ export default function ProductDetail() {
         const [productAction, reviewsAction] = await Promise.all([
           dispatch(fetchProductById(id)),
           dispatch(fetchReviewsByProduct(id)),
+          dispatch(fetchCart()),
         ]);
 
         const productData = productAction.payload;
@@ -113,6 +123,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     dispatch(fetchWishlist());
+    dispatch(fetchCart());
   }, [dispatch]);
 
   const handleQuantityChange = (value) => {
@@ -169,6 +180,15 @@ export default function ProductDetail() {
       if (addReview.rejected.match(result)) {
         throw new Error(result.payload || "Failed to post review");
       }
+      // Add the new review to the top of the reviews list instantly
+      setReviews((prev) => [
+        {
+          rating: reviewScore,
+          text: reviewText,
+          userName,
+        },
+        ...prev,
+      ]);
       setShowReviewModal(false);
       setReviewScore(0);
       setReviewText("");
@@ -208,6 +228,7 @@ export default function ProductDetail() {
       }
       setAddCartSuccess("Added to cart!");
       setTimeout(() => setAddCartSuccess(""), 2000);
+      messageApi.success("Added to cart");
     } catch (err) {
       setAddCartError(err?.response?.data?.error || err.message || "Failed to add to cart");
     } finally {
@@ -283,7 +304,7 @@ export default function ProductDetail() {
           </div>
           <div className="product-info">
             <div>
-              <h1 className="product-title">{product?.productName}</h1>
+              <h1 className="product-title-detail">{product?.productName}</h1>
               <div className="product-ratings">
                 <div className="stars">
                   {[...Array(Math.round(product?.ratings || 0))].map(
@@ -582,6 +603,7 @@ export default function ProductDetail() {
       </div>
       <FooterContact />
       <Footer />
+      {contextHolder}
     </>
   );
 }

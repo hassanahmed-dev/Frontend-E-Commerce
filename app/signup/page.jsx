@@ -1,7 +1,7 @@
-"use client"
+"use client" // This must be at the very top of the file
 
 import { useState, useEffect } from "react"
-import { Form, Input, Checkbox, Button, message } from "antd"
+import { Form, Input, Checkbox, Button, message as antdMessage } from "antd"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -19,19 +19,24 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
+
   // Show error/success messages
   useEffect(() => {
-    if (error) {
-      message.error(error)
-      dispatch(clearError())
-    }
     if (authMessage) {
-      message.success(authMessage)
+      messageApi.success(authMessage)
       dispatch(clearMessage())
-      // Redirect to check email page after successful signup
       router.push('/verification')
     }
-  }, [error, authMessage, dispatch, router])
+  }, [authMessage, dispatch, router, messageApi])
+
+  useEffect(() => {
+    if (error) {
+      messageApi.error(error)
+      dispatch(clearError())
+    }
+  }, [error, dispatch, messageApi])
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo)
@@ -40,14 +45,14 @@ export default function SignUpPage() {
   const onFinish = async (values) => {
     try {
       await dispatch(signup(values)).unwrap()
-      // Success message and redirect handled in useEffect above
     } catch (err) {
-      // Error is handled by Redux and shown above
+      console.error("Signup failed:", err)
     }
   }
 
   return (
     <div className="signup-container-signup">
+      {contextHolder}
       <div className="image-section">
         <Image
           src="/Sign.png"
@@ -104,12 +109,19 @@ export default function SignUpPage() {
               rules={[{ required: true, message: "Please enter your password" }]}
               extra="Use 8 or more characters with a mix of letters, numbers & symbols"
             >
-              <Input.Password />
+              <Input.Password 
+                iconRender={(visible) => (visible ? <Eye size={16} /> : <EyeOff size={16} />)}
+              />
             </Form.Item>
 
-          
-
-            <Form.Item name="terms" valuePropName="checked" rules={[{ required: true, message: "You must accept the terms and conditions" }]}>
+            <Form.Item 
+              name="terms" 
+              valuePropName="checked" 
+              rules={[{ 
+                validator: (_, value) => 
+                  value ? Promise.resolve() : Promise.reject(new Error('You must accept the terms and conditions'))
+              }]}
+            >
               <Checkbox>
                 Agree to our <Link href="/terms">Terms of use</Link> and{" "}
                 <Link href="/privacy">Privacy Policy</Link>

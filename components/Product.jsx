@@ -4,7 +4,7 @@ import { Heart, Eye } from "lucide-react";
 import "./Product.scss";
 import Image from "next/image";
 import Link from "next/link";
-import { Modal } from "antd"
+import { Modal, message as antdMessage } from "antd"
 import Zoom from "react-medium-image-zoom"
 import 'react-medium-image-zoom/dist/styles.css'
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,7 +15,7 @@ import "swiper/css/navigation"; // Import navigation styles
 import { fetchProducts } from '../store/slices/productSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addToWishlist, removeFromWishlist } from '../store/slices/wishlistSlice';
+import { addToWishlist, removeFromWishlist, fetchWishlist } from '../store/slices/wishlistSlice';
 
 
 // Custom Navigation Component
@@ -62,8 +62,12 @@ const Product = ({ sectionLabel = "Trending", sectionTitle = "Trending Products"
   const wishlist = useSelector(state => state.wishlist);
   const [swiperInstance, setSwiperInstance] = useState(null);
 
+  // AntD message context for reliable toasts
+  const [messageApi, contextHolder] = antdMessage.useMessage();
+
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchWishlist()); // Fetch wishlist on mount
   }, [dispatch]);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -81,8 +85,9 @@ const Product = ({ sectionLabel = "Trending", sectionTitle = "Trending Products"
 
   return (
     <section className="trending-section">
+      {contextHolder}
       <div className="section-header">
-        <div className="section-indicator"></div>
+        <div className="section-indicator1"></div>
         <h2 className="section-label">{sectionLabel}</h2>
       </div>
 
@@ -119,8 +124,13 @@ const Product = ({ sectionLabel = "Trending", sectionTitle = "Trending Products"
                     <button
                       className="action-button-heart"
                       onClick={() => {
-                        if (isInWishlist) dispatch(removeFromWishlist(productId));
-                        else dispatch(addToWishlist(productId));
+                        if (isInWishlist) {
+                          dispatch(removeFromWishlist(productId));
+                          messageApi.success("Removed from wishlist");
+                        } else {
+                          dispatch(addToWishlist(productId));
+                          messageApi.success("Added to wishlist");
+                        }
                       }}
                       aria-label="Add to wishlist"
                     >
