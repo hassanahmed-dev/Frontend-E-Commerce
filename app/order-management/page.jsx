@@ -8,109 +8,60 @@ import Sidebar from "../../components/Sidebar";
 import OrderDetailDrawer from "../../components/OrderDetailDrawer";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Loader from "../../components/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders, updateOrderStatus } from "../../store/slices/orderSlice";
 
 const OrdersPage = () => {
-  // Dynamic orders state
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Fetch orders from backend
-  useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-        const res = await fetch(`${backendUrl}/api/orders`, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-        });
-        if (!res.ok) throw new Error("Failed to fetch orders");
-        const data = await res.json();
-        setOrders(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-  }, []);
-
-  // Add filter state
+  const dispatch = useDispatch();
+  const { allOrders, loading, error } = useSelector((state) => state.order);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
-  // Filter orders based on active filter
-  const filteredOrders = orders
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
+    if (token) {
+      dispatch(fetchAllOrders(token)).catch((err) =>
+        console.error("Failed to fetch orders:", err)
+      );
+    }
+  }, [dispatch]);
+
+  const filteredOrders = allOrders
     .filter(order => {
       if (activeFilter === 'All') return true;
       if (activeFilter === 'New' && order.orderStatus === 'pending') return true;
       if (activeFilter === 'Accepted' && order.orderStatus === 'accepted') return true;
       if (activeFilter === 'Out for Delivery' && order.orderStatus === 'out-for-delivery') return true;
       if (activeFilter === 'Delivered' && order.orderStatus === 'delivered') return true;
-      if (activeFilter === 'Canceled' && (order.orderStatus === 'cancelled' || order.orderStatus === 'failed')) return true;
+      if (activeFilter === 'Cancelled' && (order.orderStatus === 'cancelled' || order.orderStatus === 'failed')) return true;
       return false;
     })
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  // Available status options
-  const statusOptions = [
-    { label: 'New', color: 'status-new' },
-    { label: 'Accepted', color: 'status-accepted' },
-    { label: 'Out for Delivery', color: 'status-out' },
-    { label: 'Delivered', color: 'status-delivered' },
-    { label: 'Canceled', color: 'status-cancelled' },
-  ];
-
-  // Status mapping for admin and user
   const statusMap = {
     pending: { label: "New", color: "#1976d2" },
     accepted: { label: "Order Accepted", color: "#17A2B8" },
     "out-for-delivery": { label: "Out For Delivery", color: "#f5b50a" },
     delivered: { label: "Delivered", color: "#43a047" },
-    cancelled: { label: "Declined", color: "#E53911" },
-    failed: { label: "Declined", color: "#E53911" },
+    cancelled: { label: "Cancelled", color: "#E53911" },
+    failed: { label: "Failed", color: "#E53911" },
   };
 
-  // Handle status change (for UI only, not backend update)
-  const handleStatusChange = (index, newStatus) => {
-    const updatedOrders = [...orders];
-    updatedOrders[index].uiStatus = {
-      label: newStatus.label,
-      type: 'dropdown',
-      color: newStatus.color,
-      disabled: newStatus.label === 'Delivered' || newStatus.label === 'Canceled',
-    };
-    setOrders(updatedOrders);
-  };
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-
-  // Helper to map order data to drawer format
   const mapOrderToDrawer = (order) => {
     return {
       id: order.id || order._id,
-      items: order.cartItems?.map(item => ({
+      _id: order._id, // always include MongoDB ObjectId
+      items: (order.cartItems || []).map(item => ({
         image: item.image || "/product1.png",
-        name: item.name,
-        qty: item.quantity,
-        color: item.color,
-        price: item.price,
+        name: item.name || "Unknown Item",
+        quantity: item.quantity || 0,
+        color: item.color || "",
+        price: item.price || 0,
       })) || [],
-      currentStatus: order.paymentStatus === "pending"
-          ? "Order Received"
-        : order.paymentStatus === "paid"
-          ? "Order Accepted"
-        : order.paymentStatus === "failed"
-          ? "Declined"
-          : "Order Received",
+      orderStatus: order.orderStatus || "pending",
       customer: {
-        name: order.userName || (order.user && order.user.name) || "",
+        name: order.userName || (order.customer?.name || ""),
         phone: order.billingDetails?.phone || "",
         email: order.billingDetails?.email || "",
       },
@@ -120,55 +71,43 @@ const OrdersPage = () => {
         city: order.shippingDetails?.city || order.billingDetails?.city || "",
         address: order.shippingDetails?.address || order.billingDetails?.address || "",
         postalCode: order.billingDetails?.postalCode || "",
-        paymentMethod: order.paymentMethod,
+        paymentMethod: order.paymentMethod || "",
         invoiceNo: order.id || order._id,
       },
-      statusUpdates: [
-        {
-          date: new Date(order.createdAt).toLocaleString(),
-          status: order.paymentStatus === "pending"
-            ? "Order Received"
-            : order.paymentStatus === "paid"
-            ? "Order Accepted"
-            : order.paymentStatus === "failed"
-            ? "Declined"
-            : "Order Received",
-        },
-      ],
+      statusUpdates: order.statusUpdates || [],
       total: order.finalTotal || order.total || 0,
+      cancellationReason: order.cancellationReason || "",
+      cancelledBy: order.cancelledBy || "",
     };
   };
 
-  // Handler for status change from drawer (UI only)
-  const handleDrawerStatusChange = async (newStatus) => {
-    // Refetch orders after status change
-    setDrawerOpen(false);
-    setLoading(true);
-    try {
-      const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const res = await fetch(`${backendUrl}/api/orders`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-      });
-      if (!res.ok) throw new Error("Failed to fetch orders");
-      const data = await res.json();
-      setOrders(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  const handleDrawerStatusChange = async (newStatus, updatedOrder) => {
+    const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
+    if (!token) {
+      console.error("No token available for status update");
+      return;
     }
+    await dispatch(updateOrderStatus({
+      orderId: updatedOrder._id,
+      status: newStatus,
+      token,
+    })).then((action) => {
+      if (updateOrderStatus.fulfilled.match(action)) {
+        setSelectedOrder(updatedOrder);
+        setDrawerOpen(false);
+      } else {
+        console.error("Status update failed:", action.payload);
+      }
+    });
   };
 
- 
   if (loading) {
     return <Loader />;
   }
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    return <div style={{ color: 'red', padding: '20px' }}>Error: {error}</div>;
+  }
 
   return (
     <ProtectedRoute adminOnly>
@@ -196,6 +135,12 @@ const OrdersPage = () => {
                       All
                     </button>
                     <button 
+                      className={`filter-btn1 ${activeFilter === 'New' ? 'active' : ''}`}
+                      onClick={() => setActiveFilter('New')}
+                    >
+                      New
+                    </button>
+                    <button 
                       className={`filter-btn1 ${activeFilter === 'Accepted' ? 'active' : ''}`}
                       onClick={() => setActiveFilter('Accepted')}
                     >
@@ -208,17 +153,16 @@ const OrdersPage = () => {
                       Out for Delivery
                     </button>
                     <button 
-                        className={`filter-btn1 ${activeFilter === 'Delivered' ? 'active' : ''}`}
-                        onClick={() => setActiveFilter('Delivered')}
-                      >
-                        Delivered
-                      </button>
-
-                    <button 
-                      className={`filter-btn1 ${activeFilter === 'Canceled' ? 'active' : ''}`}
-                      onClick={() => setActiveFilter('Canceled')}
+                      className={`filter-btn1 ${activeFilter === 'Delivered' ? 'active' : ''}`}
+                      onClick={() => setActiveFilter('Delivered')}
                     >
-                      Cancel
+                      Delivered
+                    </button>
+                    <button 
+                      className={`filter-btn1 ${activeFilter === 'Cancelled' ? 'active' : ''}`}
+                      onClick={() => setActiveFilter('Cancelled')}
+                    >
+                      Cancelled
                     </button>
                   </div>
                   <div className="search-box">
@@ -241,10 +185,10 @@ const OrdersPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order, idx) => (
+                  {filteredOrders.map((order) => (
                     <tr key={order._id}>
                       <td>
-                        <div>#{order.id}</div>
+                        <div>#{order.id || order._id.slice(-4).toUpperCase()}</div>
                       </td>
                       <td>
                         <div>{order.billingDetails?.firstName || order.userName || 'N/A'}</div>
@@ -265,15 +209,9 @@ const OrdersPage = () => {
                         : "-"
                       }</td>
                       <td>
-                        {(() => {
-                          const statusKey = order.orderStatus || 'pending';
-                          const statusInfo = statusMap[statusKey] || { label: statusKey, color: '#888' };
-                          return (
-                            <span className={`status-badge`} style={{ color: statusInfo.color, fontWeight: 600 }}>
-                              {statusInfo.label}
-                            </span>
-                          );
-                        })()}
+                        <span className={`status-badge`} style={{ color: statusMap[order.orderStatus || 'pending'].color, fontWeight: 600 }}>
+                          {statusMap[order.orderStatus || 'pending'].label}
+                        </span>
                       </td>
                       <td>Rs:{order.finalTotal || order.total || 0}</td>
                       <td>
@@ -281,8 +219,7 @@ const OrdersPage = () => {
                           size={20}
                           style={{ color: '#888', cursor: 'pointer' }}
                           onClick={() => {
-                            // Always get the latest order object from orders list
-                            const latestOrder = orders.find(o => o._id === order._id);
+                            const latestOrder = allOrders.find(o => o._id === order._id);
                             setSelectedOrder(mapOrderToDrawer(latestOrder || order));
                             setDrawerOpen(true);
                           }}
@@ -301,10 +238,10 @@ const OrdersPage = () => {
         onClose={() => setDrawerOpen(false)}
         order={selectedOrder}
         onStatusChange={handleDrawerStatusChange}
+        role="admin"
       />
     </ProtectedRoute>
   );
 };
 
 export default OrdersPage;
-

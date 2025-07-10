@@ -280,7 +280,7 @@ export default function CheckoutPage() {
     form
       .validateFields()
       .then(async (values) => {
-        debugger;
+        // debugger;
         if (paymentMethod === "credit-card") {
           // Trigger Stripe payment flow
           if (
