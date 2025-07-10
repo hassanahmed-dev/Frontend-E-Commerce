@@ -19,16 +19,23 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
     const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
+        // Helper to sum color stocks
+        const calculateTotalStock = (colors) => {
+            return (colors || []).reduce((sum, c) => sum + (parseInt(c.stock, 10) || 0), 0);
+        };
+
         if (productData) {
+            const colors = (productData.colors && Array.isArray(productData.colors))
+                ? productData.colors.map(c => ({
+                    color: c?.color || '',
+                    stock: c?.stock || ''
+                }))
+                : [{ color: '', stock: '' }];
             setFormData({
                 ...productData,
                 image: null,
-                colors: (productData.colors && Array.isArray(productData.colors))
-                    ? productData.colors.map(c => ({
-                        color: c?.color || '',
-                        stock: c?.stock || ''
-                    }))
-                    : [{ color: '', stock: '' }]
+                colors,
+                totalStock: calculateTotalStock(colors).toString(),
             });
             setImagePreview(productData.imageUrl || null);
         } else {
@@ -38,7 +45,7 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                 pricePerUnit: '',
                 priceAfterDiscount: '',
                 shortDescription: '',
-                totalStock: '',
+                totalStock: '0',
                 detailedDescription: '',
                 image: null,
                 colors: [{ color: '', stock: '' }],
@@ -46,6 +53,13 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
             setImagePreview(null);
         }
     }, [productData, isOpen]);
+
+    // Update totalStock whenever colors change
+    useEffect(() => {
+        const total = (formData.colors || []).reduce((sum, c) => sum + (parseInt(c.stock, 10) || 0), 0);
+        setFormData(prev => ({ ...prev, totalStock: total.toString() }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData.colors]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -81,13 +95,38 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Validation: All colors and stocks must be filled
-        if (formData.colors.some(c => !c.color || !c.stock)) {
+
+        // Required fields
+        const requiredFields = [
+            'productName',
+            'category',
+            'pricePerUnit',
+            'priceAfterDiscount',
+            'shortDescription',
+            'detailedDescription',
+            'totalStock'
+        ];
+
+        for (let field of requiredFields) {
+            if (!formData[field] || formData[field].toString().trim() === '') {
+                alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1')}.`);
+                return;
+            }
+        }
+
+        // Colors validation
+        if (!formData.colors || formData.colors.length === 0 || formData.colors.some(c => !c.color || !c.stock)) {
             alert('Please fill in all color and stock fields.');
             return;
         }
+
+        // Remove image if not uploading new one
+        const dataToSend = { ...formData };
+        if (!formData.image) {
+            delete dataToSend.image;
+        }
         if (onSubmit) {
-            onSubmit({ ...formData, image: formData.image });
+            onSubmit(dataToSend);
         }
     };
 
@@ -188,7 +227,7 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                             name="totalStock"
                             placeholder="102010"
                             value={formData.totalStock || ''}
-                            onChange={handleChange}
+                            readOnly
                         />
                     </div>
                 </div>
