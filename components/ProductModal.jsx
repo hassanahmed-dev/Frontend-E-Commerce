@@ -296,11 +296,11 @@ export default function ProductModal({ isOpen, onClose, title, productData, onSu
                 </button>
 
                 <div className="modal-actions" style={{
-                    position: 'sticky',
+                    
                     bottom: 0,
                     background: '#fff',
                     padding: '16px 0 0 0',
-                    zIndex: 100,
+                   
                     display: 'flex',
                     justifyContent: 'flex-end',
                     gap: 12,

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineMenu, AiOutlineBell, AiOutlineUser, AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineStar, AiOutlineUnorderedList, AiOutlineEye, AiOutlineArrowUp, AiOutlineDelete } from "react-icons/ai";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiLogOut } from "react-icons/fi";
 import { LineChart, Line, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { ScatterChart, Scatter, ZAxis } from "recharts";
 import "./page.scss";
@@ -30,6 +30,11 @@ export default function ReviewsPage() {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        router.push('/login');
+    };
+
     const reviewsToDisplay = showAllReviews ? reviews : (reviews || []).slice(0, 8);
     
     if (reviewsLoading) {
@@ -50,6 +55,7 @@ export default function ReviewsPage() {
             <div className="dashboard-actions">
               <span className="notif-icon"><AiOutlineBell size={22} /></span>
               <span className="profile-icon"><AiOutlineUser size={22} /></span>
+              <span className="logout-icon" onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: 10 }} title="Sign out"><FiLogOut size={22} /></span>
             </div>
         </header>
         <div className="reviews-grid">

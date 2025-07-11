@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { AiOutlineMenu, AiOutlineBell, AiOutlineUser, AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineStar, AiOutlineUnorderedList, AiOutlineSearch, AiOutlineEye } from "react-icons/ai";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiLogOut } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import "./page.scss";
 import Sidebar from "../../components/Sidebar";
 import OrderDetailDrawer from "../../components/OrderDetailDrawer";
@@ -17,6 +18,7 @@ const OrdersPage = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
@@ -26,6 +28,11 @@ const OrdersPage = () => {
       );
     }
   }, [dispatch]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push('/login');
+  };
 
   const filteredOrders = allOrders
     .filter(order => {
@@ -119,6 +126,7 @@ const OrdersPage = () => {
             <div className="dashboard-actions">
               <span className="notif-icon"><AiOutlineBell size={22} /></span>
               <span className="profile-icon"><AiOutlineUser size={22} /></span>
+              <span className="logout-icon" onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: 10 }} title="Sign out"><FiLogOut size={22} /></span>
             </div>
           </header>
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { AiOutlineMenu, AiOutlineBell, AiOutlineUser, AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineStar, AiOutlineUnorderedList, AiOutlineEye, AiOutlineArrowUp } from "react-icons/ai";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiLogOut } from "react-icons/fi";
 import { LineChart, Line, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { ScatterChart, Scatter, ZAxis } from "recharts";
 import "./page.scss";
@@ -10,6 +10,7 @@ import Sidebar from "../../components/Sidebar";
 import OrderDetailDrawer from "../../components/OrderDetailDrawer";
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Loader from "../../components/Loader";
+import { useRouter } from "next/navigation";
 
 const ordersZigZag = [
   { value: 2 },
@@ -196,7 +197,7 @@ export default function DashboardPage() {
           ? "Order Received"
         : order.paymentStatus === "paid"
           ? "Order Accepted"
-        : order.paymentStatus === "failed"
+          : order.paymentStatus === "failed"
           ? "Declined"
           : "Order Received",
       customer: {
@@ -253,6 +254,12 @@ export default function DashboardPage() {
     }
   };
 
+  const router = useRouter();
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push('/login');
+  };
   
   if (loading) {
     return <Loader />;
@@ -273,6 +280,7 @@ export default function DashboardPage() {
           <div className="dashboard-actions">
             <span className="notif-icon"><AiOutlineBell size={22} /></span>
             <span className="profile-icon"><AiOutlineUser size={22} /></span>
+            <span className="logout-icon" onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: 10 }} title="Sign out"><FiLogOut size={22} /></span>
           </div>
         </header>
 

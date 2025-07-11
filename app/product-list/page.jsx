@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { AiOutlineMenu, AiOutlineBell, AiOutlineUser, AiOutlineDashboard, AiOutlineShoppingCart, AiOutlineStar, AiOutlineUnorderedList, AiOutlineEdit, AiOutlineDelete, AiOutlineSearch, AiOutlinePlus } from "react-icons/ai";
+import { FiLogOut } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import "./page.scss";
 import ProductModal from "../../components/ProductModal";
 import ProductReviewsModal from "../../components/ProductReviewsModal";
@@ -24,6 +26,12 @@ export default function ProductList() {
     const [selectedProductReviews, setSelectedProductReviews] = useState([]);
     const [selectedProductName, setSelectedProductName] = useState("");
     const [selectedProductImage, setSelectedProductImage] = useState("");
+
+    const router = useRouter();
+    const handleLogout = () => {
+        localStorage.clear();
+        router.push('/login');
+    };
 
     useEffect(() => {
         dispatch(fetchProducts());
@@ -151,6 +159,7 @@ export default function ProductList() {
               <div className="dashboard-actions">
                   <span className="notif-icon"><AiOutlineBell size={22} /></span>
                   <span className="profile-icon"><AiOutlineUser size={22} /></span>
+                  <span className="logout-icon" onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: 10 }} title="Sign out"><FiLogOut size={22} /></span>
               </div>
           </header>
 
