@@ -85,7 +85,7 @@ export const updateOrderStatus = createAsyncThunk(
   'order/updateOrderStatus',
   async ({ orderId, status, reason, cancelledBy, token }, { rejectWithValue }) => {
     try {
-      console.log('Updating status. OrderId:', orderId, 'Status:', status, 'Reason:', reason, 'CancelledBy:', cancelledBy, 'Token:', token);
+      console.log('Updating status. OrderId:', orderId, 'Status:', status, 'Reason:', reason, 'CancelledBy:', cancelledBy);
       if (!token) throw new Error('Authentication token is missing');
       if (!isValidObjectId(orderId)) throw new Error('Invalid or missing MongoDB _id for order status update');
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -98,7 +98,7 @@ export const updateOrderStatus = createAsyncThunk(
         body: JSON.stringify({ status, reason, cancelledBy }),
       });
       if (!res.ok) {
-        const errorData = await res.text(); // Use text() to capture raw response
+        const errorData = await res.text();
         console.error('Backend response error. Status:', res.status, 'Body:', errorData);
         throw new Error(`Failed to update order status: ${res.status} - ${errorData || 'Unknown error'}`);
       }
@@ -134,7 +134,9 @@ export const cancelOrder = createAsyncThunk(
         console.error('Backend response error. Status:', res.status, 'Body:', errorData);
         throw new Error(`Failed to cancel order: ${res.status} - ${errorData || 'Unknown error'}`);
       }
-      return await res.json();
+      const responseData = await res.json();
+      console.log('Order cancelled successfully:', responseData);
+      return responseData;
     } catch (err) {
       console.error('Cancel order error:', err.message, 'OrderId:', orderId);
       return rejectWithValue(err.message);
@@ -169,8 +171,8 @@ export const fetchRevenueData = createAsyncThunk(
 
 function normalizeOrder(order = {}) {
   return {
-    id: order.id || '', // 4-digit id only
-    _id: order._id || '', // only MongoDB ObjectId
+    id: order.id || '',
+    _id: order._id || '',
     orderStatus: (order.orderStatus || 'pending').toLowerCase(),
     cancellationReason: order.cancellationReason || '',
     cancelledBy: order.cancelledBy || '',
@@ -235,6 +237,7 @@ const orderSlice = createSlice({
         if (action.payload) {
           state.order = normalizeOrder(action.payload);
           state.orders = [normalizeOrder(action.payload), ...state.orders];
+          state.allOrders = [normalizeOrder(action.payload), ...state.allOrders];
         }
         state.success = true;
       })
@@ -274,8 +277,10 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = true;
         if (action.payload) {
           const updatedOrder = normalizeOrder(action.payload);
+          console.log('Updating Redux state with order:', updatedOrder);
           state.orders = state.orders.map((order) =>
             order._id === updatedOrder._id ? updatedOrder : order
           );
@@ -283,7 +288,6 @@ const orderSlice = createSlice({
             order._id === updatedOrder._id ? updatedOrder : order
           );
         }
-        state.success = true;
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading = false;
@@ -297,8 +301,10 @@ const orderSlice = createSlice({
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = true;
         if (action.payload) {
           const updatedOrder = normalizeOrder(action.payload);
+          console.log('Cancel order updated in Redux state:', updatedOrder);
           state.orders = state.orders.map((order) =>
             order._id === updatedOrder._id ? updatedOrder : order
           );
@@ -306,7 +312,6 @@ const orderSlice = createSlice({
             order._id === updatedOrder._id ? updatedOrder : order
           );
         }
-        state.success = true;
       })
       .addCase(cancelOrder.rejected, (state, action) => {
         state.loading = false;

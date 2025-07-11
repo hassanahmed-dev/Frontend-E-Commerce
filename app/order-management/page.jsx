@@ -15,6 +15,7 @@ import { fetchAllOrders, updateOrderStatus } from "../../store/slices/orderSlice
 const OrdersPage = () => {
   const dispatch = useDispatch();
   const { allOrders, loading, error } = useSelector((state) => state.order);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -23,9 +24,7 @@ const OrdersPage = () => {
   useEffect(() => {
     const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
     if (token) {
-      dispatch(fetchAllOrders(token)).catch((err) =>
-        console.error("Failed to fetch orders:", err)
-      );
+      dispatch(fetchAllOrders(token)).finally(() => setInitialLoad(false));
     }
   }, [dispatch]);
 
@@ -108,7 +107,7 @@ const OrdersPage = () => {
     });
   };
 
-  if (loading) {
+  if (initialLoad) {
     return <Loader />;
   }
 
@@ -243,7 +242,14 @@ const OrdersPage = () => {
       </div>
       <OrderDetailDrawer
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false);
+          // Silent refresh: fetch orders but don't show loader
+          const token = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user"))?.token : null;
+          if (token) {
+            dispatch(fetchAllOrders(token));
+          }
+        }}
         order={selectedOrder}
         onStatusChange={handleDrawerStatusChange}
         role="admin"

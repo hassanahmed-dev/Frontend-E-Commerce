@@ -5,32 +5,29 @@
     margin-top: 30px;
     margin-right: 30px;
 }
+:global(.ant-drawer-body) {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 .order-detail-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  background: #fff;
-  box-shadow: -2px 0 16px rgba(0,0,0,0.08);
-  z-index: 1000;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
 
-  // Dynamic width handling via JSX
-  @media (max-width: 1100px) {
-    width: 100vw; // Full width for mobile
-    min-width: 0;
+  &__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
   }
 
-  // Optional: Ensure max-width aligns with JSX logic
-  @media (min-width: 1100px) and (max-width: 1440px) {
-    max-width: 70vw; // 70% for laptops
-  }
-  @media (min-width: 1441px) {
-    max-width: 50vw; // 50% for large screens
+  &__footer {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 16px 24px;
   }
 
   &__info-row {
@@ -329,7 +326,7 @@
     border-top: 1px solid #e0e0e0;
     padding: 0 32px 0 32px;
     min-height: 70px;
-    // position: sticky;
+    position: sticky;
     bottom: 0;
     z-index: 20;
 
@@ -430,4 +427,17 @@
   height: 100vh;
   background: rgba(0,0,0,0.18);
   z-index: 999;
+}
+
+.order-detail-drawer__loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 } 
